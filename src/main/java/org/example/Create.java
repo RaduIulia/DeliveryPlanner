@@ -42,11 +42,16 @@ public class Create {
             streetList.add(street);
         }
 
+        File fileName = new File("generate.txt");
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+
         for(Street i : streetList){
             System.out.println(i.getName() + " " + i.getCost() + " | " + i.neighborhood(streetList));
             Add.createStreet(conn.connection, i, streetList);
+            writer.write("'" + i.getName() + "', ");
         }
-
+        writer.close();
         for(int i = 0; i < 100; i++){
             Items items = new Items(i, faker.beer().name(), random.nextInt(5));
             itemsList.add(items);
@@ -142,7 +147,7 @@ public class Create {
 
     }
     public void readFile(){
-        String file = "C:\\Users\\iulia\\IdeaProjects\\DeliveryPlanner\\adiacenta.txt";
+        String file = "C:\\Users\\Vals_\\OneDrive\\Desktop\\adiacenta.txt";
         BufferedReader reader;
         String line;
 
@@ -171,9 +176,9 @@ public class Create {
         String sql;
 
         stmt.execute("DROP TABLE warehouseItems");
-       stmt.execute("DROP TABLE streets");
+        stmt.execute("DROP TABLE streets");
         stmt.execute("DROP TABLE items");
-       stmt.execute("DROP TABLE warehouses");
+        stmt.execute("DROP TABLE warehouses");
 
         sql = "CREATE TABLE streets (id numeric(5) PRIMARY KEY , nume_strada varchar2(4000), cost numeric, intersectare varchar2(4000))";
         stmt.execute(sql);
