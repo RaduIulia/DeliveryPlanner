@@ -115,46 +115,76 @@ end;
 CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\Vals_\OneDrive\Desktop\Proiecte\plsql\V2';
 /
 
+CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\iulia\IdeaProjects\V2';
+CREATE Or REPLACE TYPE vector_linie AS  VARRAY(1000) OF INTEGER; 
+
 DECLARE v_fisier UTL_FILE.FILE_TYPE;
 v_sir VARCHAR2(250);
 v_maxim number(10);
 v_index_maxim number(10);
+v_per_linie number(10);
+v_total number(10);
+type vector_linie IS VARRAY(5) OF INTEGER; 
+v_per_numar vector_linie;
 BEGIN v_fisier:=UTL_FILE.FOPEN('MYDIR','file.txt','R');
+v_per_numar := vector_linie(0,0,0,0,0);
+v_total := 0;
 loop
-BEGIN UTL_FILE.GET_LINE(v_fisier,v_sir); 
-DBMS_OUTPUT.PUT_LINE(v_sir);
-print_string(v_sir);
+BEGIN UTL_FILE.GET_LINE(v_fisier,v_sir);
+v_total := v_total+1;
+--DBMS_OUTPUT.PUT_LINE(v_sir);
+v_per_linie := citire_si_prelucrare_linie(v_sir);
+--DBMS_OUTPUT.PUT_LINE(v_per_linie);
+v_per_numar(v_per_linie) := v_per_numar(v_per_linie)+1;
 EXCEPTION 
 WHEN NO_DATA_FOUND 
 THEN EXIT ;
 END; 
 end loop;
+ if( v_per_numar(1) > 0 )
+    then
+dbms_output.put_line(' Procentul de strazi care se intersecteaza cu o singura strada este: ' ||  100 / (v_total / v_per_numar(1))||'%.'); 
+      else
+      
+dbms_output.put_line(' Procentul de strazi care se intersecteaza cu o singura strada este: ' || 0 ||'%.'); 
+END IF;
+      
+FOR i in 2 .. 5 LOOP 
+    if( v_per_numar(i) > 0 )
+    then
+      dbms_output.put_line(' Procentul de strazi care se intersecteaza cu alte '|| i || ' strazi este: ' ||  100 / (v_total / v_per_numar(i))||'%.'); 
+      else      
+      dbms_output.put_line(' Procentul de strazi care se intersecteaza cu alte '|| i || ' strazi este: ' ||  0 ||'%.'); 
+ END IF;
+   END LOOP; 
 UTL_FILE.FCLOSE(v_fisier); 
 END; 
 /
 
-Create or replace procedure print_string( IN_string IN varchar2 )
-AS
+Create or replace FUNCTION citire_si_prelucrare_linie( IN_string IN varchar2 )
+RETURN INT AS
 v_length number(10);
 v_out varchar2(20);
 v_int number(10);
+v_numar number(10);
 Begin
+v_numar := 0;
 v_length := length(IN_string);
 for i in 1..v_length
 Loop
 v_out  := substr(IN_string,i,1) ;
-if(v_out = '1')
+if(v_out != '0' and v_out != ' ')
 then
-   DBMS_OUTPUT.PUT_LINE('True');
-   else
-   DBMS_OUTPUT.PUT_LINE('False');
-DBMS_OUTPUT.PUT_LINE(v_out);
+   --DBMS_OUTPUT.PUT_LINE('True');
+   v_numar := v_numar+1;
+   --DBMS_OUTPUT.PUT_LINE('False');
 end IF;
+--DBMS_OUTPUT.PUT_LINE(v_out);
 End loop;
-DBMS_OUTPUT.PUT_LINE('Text printed: ' || IN_string);
+--DBMS_OUTPUT.PUT_LINE(v_numar);
+return v_numar;
+--DBMS_OUTPUT.PUT_LINE('Text printed: ' || IN_string);
 End;
- -- Procedure created.
-/
 
 declare
 x nume_array;
