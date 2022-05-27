@@ -1,16 +1,7 @@
 package org.example.Algorithm;
 
     public class Prim {
-        public static void main(String[] args) {
-            Graph graph = new Graph(5, false, true);
-
-            graph.addEdge(0, 1, 1);
-            graph.addEdge(0, 2, 5);
-            graph.addEdge(0, 3, 10);
-            graph.addEdge(0, 4, 4);
-            graph.addEdge(1, 2, 2);
-            graph.addEdge(1, 4, 1);
-            graph.addEdge(2, 3, 4);
+        public static void start(Graph graph) {
 
             int startNode = 0;
             // Distance from the start node to itself is 0

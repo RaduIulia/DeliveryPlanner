@@ -10,6 +10,7 @@ import org.example.Entity.Intersection;
 import org.example.Entity.Street;
 import org.example.Entity.Warehouses;
 import org.example.panel.ConfigPanel;
+import org.example.Algorithm.*;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -164,6 +165,13 @@ public class Create {
                 }
             }
         }
+        Graph graph = new Graph(streets, false, true);
+        for( i=0;i<streets;i++)
+            for(j=0;j<streets;j++)
+                if(distances[i][j]>0)
+                    graph.addEdge(i,j,distances[i][j]);
+          Prim.start(graph);
+
     }
 
     public void writeFile() throws IOException {
