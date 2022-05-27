@@ -144,24 +144,20 @@ public class Create {
 
     private void buildMatrix() {
         int i, j;
+        int count;
         Random random = new Random();
-
+        int[] folosite = new int[streets];
         for(i = 0; i < streets; i++){
-            int intersect = 0;
-            int count;
             for(j = 0; j < streets; j++){
-                count = 0;
-//                if(distances[j][i] != 1 && i != j && random.nextInt(10) == 0) {
-                if(distances[j][i] != 1 && i != j && random.nextBoolean() && intersect < 3) {
-                    for(int k = 0; k < streets; k++){
-                        if (distances[j][k] == 1)
-                            count++;
-                    }
-                    if(count < 3){
-                        distances[i][j] = 1;
-                        distances[j][i] = 1;
-                        intersect++;
-                    }
+                if(distances[i][j] != 1)
+                if(i != j)
+                    if(folosite[i]<5)
+                        if(folosite[j]<5)
+                    if(random.nextBoolean())  {
+                    folosite[i]++;
+                    folosite[j]++;
+                    distances[i][j] = 1;
+                    distances[j][i] = 1;
                 }
             }
         }
