@@ -93,13 +93,13 @@ public class Create {
         callableStatement.setInt(2, streets);
         callableStatement.execute();
         System.out.println("abc");
-         result2 = callableStatement.getArray(1);
+        result2 = callableStatement.getArray(1);
 
-         obj = result2.getArray();
+        obj = result2.getArray();
 
-         objectArray = (Object []) obj;   // cast it to an array of objects
+        objectArray = (Object []) obj;   // cast it to an array of objects
 
-         buffer = new StringBuffer("");
+        buffer = new StringBuffer("");
         buffer.append(String.valueOf(objectArray[0]));
 
         for (int j=1; j < objectArray.length; j++)
@@ -237,4 +237,3 @@ public class Create {
         return streetList;
     }
 }
-
