@@ -37,10 +37,10 @@ public class Create {
         createTables();
         writeFile();
 
-        for(int i = 0; i < streets; i++){
-            Street street = new Street(i, faker.address().streetName(), random.nextInt(10), distances[i]);
-            streetList.add(street);
-        }
+//        for(int i = 0; i < streets; i++){
+//            Street street = new Street(i, faker.address().streetName(), random.nextInt(10), distances[i]);
+//            streetList.add(street);
+//        }
 
         File fileName = new File("generate.txt");
 
@@ -87,6 +87,23 @@ public class Create {
             buffer.append(", ").append(String.valueOf(objectArray[j]));
         }
 
+        callableStatement = conn.connection.prepareCall("begin ? := generate(?); end;");
+        callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
+        callableStatement.setInt(2, 10);
+        callableStatement.execute();
+        System.out.println("abc");
+         result2 = callableStatement.getArray(1);
+
+         obj = result2.getArray();
+
+         objectArray = (Object []) obj;   // cast it to an array of objects
+
+         buffer = new StringBuffer("");
+        buffer.append(String.valueOf(objectArray[0]));
+        for (int j=1; j < objectArray.length; j++)
+        {
+            buffer.append(", ").append(String.valueOf(objectArray[j]));
+        }
 
         System.out.println(buffer);
         callableStatement.close();
