@@ -195,6 +195,8 @@ end;
 
 -- -----------------------------------------------------------
 -- -----------------------------------------------------------
+
+
 /
 CREATE OR REPLACE FUNCTION findStreetById(x IN NUMBER) 
 RETURN varchar2 AS
