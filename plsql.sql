@@ -103,6 +103,21 @@ begin
 end;
 /
 
+set serveroutput on; 
+DECLARE v_fisier UTL_FILE.FILE_TYPE;
+v_sir VARCHAR2(250);
+BEGIN v_fisier:=UTL_FILE.FOPEN('MYDIR','file.txt','R');
+loop
+BEGIN UTL_FILE.GET_LINE(v_fisier,v_sir); 
+DBMS_OUTPUT.PUT_LINE(v_sir);
+EXCEPTION 
+WHEN NO_DATA_FOUND 
+THEN EXIT ;
+END; 
+end loop;
+UTL_FILE.FCLOSE(v_fisier); 
+END; /
+
 declare
 x nume_array;
 begin
