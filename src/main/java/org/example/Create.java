@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 
 import oracle.jdbc.OracleTypes;
 import org.example.DAO.Add;
+import org.example.DAO.Find;
 import org.example.Entity.Items;
 import org.example.Entity.Intersection;
 import org.example.Entity.Street;
@@ -89,7 +90,7 @@ public class Create {
 
         callableStatement = conn.connection.prepareCall("begin ? := generate(?); end;");
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
-        callableStatement.setInt(2, 10);
+        callableStatement.setInt(2, streets);
         callableStatement.execute();
         System.out.println("abc");
          result2 = callableStatement.getArray(1);
@@ -100,12 +101,28 @@ public class Create {
 
          buffer = new StringBuffer("");
         buffer.append(String.valueOf(objectArray[0]));
+
         for (int j=1; j < objectArray.length; j++)
         {
             buffer.append(", ").append(String.valueOf(objectArray[j]));
         }
+        String str[] = buffer.toString().split(",");
+        List<String> al = new ArrayList<String>();
+        al = Arrays.asList(str);
+        for(String s: al){
+            System.out.println(s);
+        }
 
-        System.out.println(buffer);
+        for(int i = 1; i <= streets; i++){
+            Street street = new Street(i, Find.findNameById(conn.connection, i), Find.findCostById(conn.connection, i), distances[i-1]);
+            streetList.add(street);
+        }
+
+        System.out.println("START BUFFER\n" + buffer + "\nEND BUFFER\n");
+        for(Street i : streetList){
+            System.out.println(i.getName() + " " + i.getCost() + " | " + i.neighborhood(streetList));
+
+        }
         callableStatement.close();
 
 //        for(Street s: streetList) {

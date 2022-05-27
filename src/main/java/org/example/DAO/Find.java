@@ -70,4 +70,31 @@ public class Find {
         }
         System.out.println();
     }
+
+    public static String findNameById(Connection connection, int id) throws SQLException{
+
+        String sql = "SELECT * FROM streets WHERE id = ?";
+        PreparedStatement pstatement = connection.prepareStatement(sql);
+        pstatement.setInt(1, id);
+
+        ResultSet rs = pstatement.executeQuery();
+        String keep = "";
+        while(rs.next()){
+            keep = rs.getString(2);
+        }
+        return keep;
+    }
+    public static int findCostById(Connection connection, int id) throws SQLException{
+
+        String sql = "SELECT * FROM streets WHERE id = ?";
+        PreparedStatement pstatement = connection.prepareStatement(sql);
+        pstatement.setInt(1, id);
+
+        ResultSet rs = pstatement.executeQuery();
+        int keep = -1;
+        while(rs.next()){
+            keep = rs.getInt(3);
+        }
+        return keep;
+    }
 }
