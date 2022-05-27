@@ -157,6 +157,8 @@ public class Create {
     private void buildMatrix() {
         int i, j;
         int count;
+        int max=10;
+        int min=1;
         Random random = new Random();
         int[] folosite = new int[streets];
         for(i = 0; i < streets; i++){
@@ -168,8 +170,8 @@ public class Create {
                     if(random.nextBoolean())  {
                     folosite[i]++;
                     folosite[j]++;
-                    distances[i][j] = 1;
-                    distances[j][i] = 1;
+                    distances[i][j] = random.nextInt(max - min) + min;
+                    distances[j][i] = random.nextInt(max - min) + min;
                 }
             }
         }

@@ -51,7 +51,7 @@ public class Street {
 
         int i = 0;
         for(Street st : streetList){
-            if(adjacency[i] == 1 && st.getName() != null) {
+            if(adjacency[i] !=0  && st.getName() != null) {
                 ddd.add(st.getName() + " - " + st.getCost());
             }
             i++;
