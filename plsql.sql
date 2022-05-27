@@ -103,20 +103,47 @@ begin
 end;
 /
 
+
 set serveroutput on; 
 DECLARE v_fisier UTL_FILE.FILE_TYPE;
 v_sir VARCHAR2(250);
+v_maxim number(10);
+v_index_maxim number(10);
 BEGIN v_fisier:=UTL_FILE.FOPEN('MYDIR','file.txt','R');
 loop
 BEGIN UTL_FILE.GET_LINE(v_fisier,v_sir); 
 DBMS_OUTPUT.PUT_LINE(v_sir);
+print_string(v_sir);
 EXCEPTION 
 WHEN NO_DATA_FOUND 
 THEN EXIT ;
 END; 
 end loop;
 UTL_FILE.FCLOSE(v_fisier); 
-END; /
+END; 
+
+Create or replace procedure print_string( IN_string IN varchar2 )
+AS
+v_length number(10);
+v_out varchar2(20);
+v_int number(10);
+Begin
+v_length := length(IN_string);
+for i in 1..v_length
+Loop
+v_out  := substr(IN_string,i,1) ;
+if(v_out = '1')
+then
+   DBMS_OUTPUT.PUT_LINE('True');
+   else
+   DBMS_OUTPUT.PUT_LINE('False');
+DBMS_OUTPUT.PUT_LINE(v_out);
+end IF;
+End loop;
+DBMS_OUTPUT.PUT_LINE('Text printed: ' || IN_string);
+End;
+ -- Procedure created.
+
 
 declare
 x nume_array;
