@@ -124,7 +124,19 @@ public class Create {
 
         }
         callableStatement.close();
+
+        for(Street s : streetList){
+            callableStatement = conn.connection.prepareCall("UPDATE streets SET intersectare = ? WHERE id = ?");
+            String neighborhood = String.valueOf(s.neighborhood(streetList));
+            callableStatement.setString(1, neighborhood);
+            callableStatement.setInt(2, s.getId());
+            callableStatement.execute();
+        }
+        callableStatement.close();
+
 //        Find.findStreetById(conn.connection);
+//        Find.findStreetByCost(conn.connection);
+        Find.findStreetByName(conn.connection);
 
 //        for(Street s: streetList) {
 //            intersections.add(new Intersection(faker.address().streetName(), s.transform(streetList)));

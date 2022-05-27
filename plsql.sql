@@ -164,3 +164,130 @@ end;
 
 
 -- -----------------------------------------------------------
+/
+CREATE OR REPLACE FUNCTION findStreetById(x IN NUMBER) 
+RETURN varchar2 AS
+    v_return varchar2(4000);
+    v_id INTEGER;
+    v_nume_strada varchar2(255);
+    v_cost INTEGER;
+    v_intersectare varchar2(255);
+    counter INTEGER;
+BEGIN
+    SELECT id, nume_strada, cost, intersectare INTO v_id, v_nume_strada, v_cost, v_intersectare FROM streets WHERE id = x;
+    v_return := v_id || ' ' || v_nume_strada || ' ' || v_cost || ' ' || v_intersectare;
+    RETURN v_return;
+    EXCEPTION
+        WHEN no_data_found THEN
+            SELECT COUNT(*) INTO counter FROM streets WHERE id = x;
+            IF COUNTER = 0 THEN
+                raise_application_error (-20002, 'Nu exista strada cu id-ul ' || x);
+            END IF;
+    
+END;
+/
+
+CREATE OR REPLACE FUNCTION findStreetByName(x IN VARCHAR2) 
+RETURN nume_array AS
+    return_array nume_array := nume_array(100);
+    v_return varchar2(4000);
+    v_id INTEGER;
+    v_nume_strada varchar2(255);
+    v_cost INTEGER;
+    v_intersectare varchar2(255);
+    counter INTEGER;
+    v_cursor_id INTEGER;
+    v_ok INTEGER;
+    v_i INTEGER;
+    v_fisier UTL_FILE.FILE_TYPE;
+    x_varchar varchar2(255);
+BEGIN
+    v_i := 0;
+    v_fisier:=UTL_FILE.FOPEN('MYDIR','myfile.txt','W');
+    v_cursor_id := DBMS_SQL.OPEN_CURSOR;
+--    x_varchar := cast(x as varchar2);
+    DBMS_SQL.PARSE(v_cursor_id, 'SELECT id, nume_strada, cost, intersectare FROM streets WHERE nume_strada like '' || x || ''', DBMS_SQL.NATIVE);
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 1, v_id); 
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 2, v_nume_strada, 255); 
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 3, v_cost);   
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 4, v_intersectare, 255);   
+    
+    v_ok := DBMS_SQL.EXECUTE(v_cursor_id);
+    
+    LOOP 
+         IF DBMS_SQL.FETCH_ROWS(v_cursor_id)>0 THEN 
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 1, v_id); 
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 2, v_nume_strada); 
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 3, v_cost);
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 4, v_intersectare);
+            v_return := v_id || ' ' || v_nume_strada || ' ' || v_cost || ' ' || v_intersectare;
+            UTL_FILE.PUTF(v_fisier, v_return);
+            v_i := v_i + 1;
+            return_array.extend;
+            return_array(v_i) := v_return;
+        ELSE 
+            EXIT; 
+        END IF; 
+    END LOOP;   
+    UTL_FILE.FCLOSE(v_fisier);
+    DBMS_SQL.CLOSE_CURSOR(v_cursor_id);
+    return return_array;
+    EXCEPTION
+        WHEN no_data_found THEN
+            SELECT COUNT(*) INTO counter FROM streets WHERE nume_strada like '%' || x || '%';
+            IF COUNTER = 0 THEN
+                raise_application_error (-20005, 'Nu exista strada cu numele ' || x);
+            END IF;
+    
+END;
+/
+
+CREATE OR REPLACE FUNCTION findStreetByCost(x IN NUMBER) 
+RETURN nume_array AS
+    return_array nume_array := nume_array(100);
+    v_return varchar2(4000);
+    v_id INTEGER;
+    v_nume_strada varchar2(255);
+    v_cost INTEGER;
+    v_intersectare varchar2(255);
+    counter INTEGER;
+    v_cursor_id INTEGER;
+    v_ok INTEGER;
+    v_i INTEGER;
+BEGIN
+    v_i := 0;
+    v_cursor_id := DBMS_SQL.OPEN_CURSOR;
+    DBMS_SQL.PARSE(v_cursor_id, 'SELECT id, nume_strada, cost, intersectare FROM streets WHERE cost = ' || x, DBMS_SQL.NATIVE);
+    
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 1, v_id); 
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 2, v_nume_strada, 255); 
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 3, v_cost);   
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 4, v_intersectare, 255);   
+    
+    v_ok := DBMS_SQL.EXECUTE(v_cursor_id);
+    
+    
+    LOOP 
+         IF DBMS_SQL.FETCH_ROWS(v_cursor_id)>0 THEN 
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 1, v_id); 
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 2, v_nume_strada); 
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 3, v_cost);
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 4, v_intersectare);
+            v_return := v_id || ' ' || v_nume_strada || ' ' || v_cost || ' ' || v_intersectare;
+            v_i := v_i + 1;
+            return_array.extend;
+            return_array(v_i) := v_return;
+        ELSE 
+            EXIT; 
+        END IF; 
+    END LOOP;   
+    DBMS_SQL.CLOSE_CURSOR(v_cursor_id);
+    return return_array;
+    EXCEPTION
+        WHEN no_data_found THEN
+            SELECT COUNT(*) INTO counter FROM streets WHERE cost = x;
+            IF COUNTER = 0 THEN
+                raise_application_error (-20004, 'Nu exista strada cu costul ' || x);
+            END IF;
+END;
+/

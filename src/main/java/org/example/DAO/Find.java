@@ -1,60 +1,73 @@
 package org.example.DAO;
 
+import oracle.jdbc.OracleTypes;
+
 import java.sql.*;
 import java.util.Scanner;
 
 public class Find {
     static Scanner scanner = new Scanner(System.in);
-    public static void findStreetById(Connection connection) throws SQLException{
-        System.out.println("Street id: ");
+    public static void findStreetById(Connection connection) throws SQLException {
+        System.out.println("id: ");
         int id = Integer.parseInt(scanner.nextLine());
+        CallableStatement callableStatement = connection.prepareCall("begin ? := findStreetById(?); end;");
+        callableStatement.registerOutParameter(1, OracleTypes.VARCHAR);
+        callableStatement.setInt(2, id);
+        callableStatement.execute();
+        System.out.println("abc");
+        String result = callableStatement.getString(1);
 
-        String sql = "SELECT * FROM streets WHERE id = ?";
-        CallableStatement cs = connection.prepareCall(sql);
-        cs.setInt(1, id);
-        try {
-            ResultSet rs = cs.executeQuery();
-
-            while (rs.next()) {
-                for (int i = 1; i < 5; i++)
-                    System.out.print(rs.getString(i) + " ");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        System.out.println(result);
     }
     public static void findStreetByName(Connection connection) throws SQLException{
         System.out.println("Street name: ");
         String name = scanner.nextLine();
 
-        String sql = "SELECT * FROM streets WHERE nume_strada like ?";
-        PreparedStatement pstatement = connection.prepareStatement(sql);
-        pstatement.setString(1, '%' + name + '%');
+        CallableStatement callableStatement = connection.prepareCall("begin ? := findStreetByName(?); end;");
+        callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
+        callableStatement.setString(2, name);
+        callableStatement.execute();
+        System.out.println("abc");
+        Array result = callableStatement.getArray(1);
 
-        ResultSet rs = pstatement.executeQuery();
+        Object obj = result.getArray();
 
-        while(rs.next()){
-            for(int i = 1;i<5;i++)
-                System.out.print(rs.getString(i) + " ");
+        Object [] objectArray = (Object []) obj;   // cast it to an array of objects
+
+        StringBuffer buffer = new StringBuffer("");
+        buffer.append(String.valueOf(objectArray[0]));
+//        System.out.println(objectArray.length);
+        for (int j = 1; j < objectArray.length; j++)
+        {
+            buffer.append("\n").append(String.valueOf(objectArray[j]));
+
         }
-        System.out.println();
+        System.out.println(buffer);
     }
     public static void findStreetByCost(Connection connection) throws SQLException{
-        System.out.println("id: ");
+        System.out.println("cost: ");
         int cost = Integer.parseInt(scanner.nextLine());
-//        Statement statement = connection.createStatement();
 
-        String sql = "SELECT * FROM streets WHERE cost = ?";
-        PreparedStatement pstatement = connection.prepareStatement(sql);
-        pstatement.setInt(1, cost);
+        CallableStatement callableStatement = connection.prepareCall("begin ? := findStreetByCost(?); end;");
+        callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
+        callableStatement.setInt(2, cost);
+        callableStatement.execute();
+        System.out.println("abc");
+        Array result = callableStatement.getArray(1);
 
-        ResultSet rs = pstatement.executeQuery();
+        Object obj = result.getArray();
 
-        while(rs.next()){
-            for(int i = 1;i<5;i++)
-                System.out.print(rs.getString(i) + " ");
+        Object [] objectArray = (Object []) obj;   // cast it to an array of objects
+
+        StringBuffer buffer = new StringBuffer("");
+        buffer.append(String.valueOf(objectArray[0]));
+        System.out.println(objectArray.length);
+        for (int j = 1; j < objectArray.length; j++)
+        {
+            buffer.append("\n").append(String.valueOf(objectArray[j]));
+
         }
-        System.out.println();
+        System.out.println(buffer);
     }
     public static void findStreetByIntersections(Connection connection) throws SQLException{
         System.out.println("Street name: ");
