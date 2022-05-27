@@ -6,21 +6,22 @@ import java.util.Scanner;
 public class Find {
     static Scanner scanner = new Scanner(System.in);
     public static void findStreetById(Connection connection) throws SQLException{
-        System.out.println("Id: ");
+        System.out.println("Street id: ");
         int id = Integer.parseInt(scanner.nextLine());
-//        Statement statement = connection.createStatement();
 
         String sql = "SELECT * FROM streets WHERE id = ?";
-        PreparedStatement pstatement = connection.prepareStatement(sql);
-        pstatement.setInt(1, id);
+        CallableStatement cs = connection.prepareCall(sql);
+        cs.setInt(1, id);
+        try {
+            ResultSet rs = cs.executeQuery();
 
-        ResultSet rs = pstatement.executeQuery();
-
-        while(rs.next()){
-            for(int i = 1;i<5;i++)
-                System.out.print(rs.getString(i) + " ");
+            while (rs.next()) {
+                for (int i = 1; i < 5; i++)
+                    System.out.print(rs.getString(i) + " ");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        System.out.println();
     }
     public static void findStreetByName(Connection connection) throws SQLException{
         System.out.println("Street name: ");

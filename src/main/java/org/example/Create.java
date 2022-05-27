@@ -124,6 +124,7 @@ public class Create {
 
         }
         callableStatement.close();
+//        Find.findStreetById(conn.connection);
 
 //        for(Street s: streetList) {
 //            intersections.add(new Intersection(faker.address().streetName(), s.transform(streetList)));

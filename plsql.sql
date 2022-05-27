@@ -30,6 +30,8 @@ v_cursor_id INTEGER;
 v_item_id INTEGER;
 v_warehouse_id INTEGER;
 v_i INTEGER;
+mesaj VARCHAR2(32767);
+counter INTEGER;
 begin
     v_i := 0;
     v_cursor_id := DBMS_SQL.OPEN_CURSOR;
@@ -55,9 +57,17 @@ begin
         END IF; 
     END LOOP;   
     DBMS_OUTPUT.PUT_LINE('outside ' || v_array(v_i));
-
-    return v_array;
     DBMS_SQL.CLOSE_CURSOR(v_cursor_id);
+    return v_array;
+    
+    EXCEPTION
+        WHEN no_data_found THEN
+            SELECT COUNT(*) INTO counter FROM warehouseItems WHERE itemId = 999;
+            IF counter = 0 THEN
+                mesaj := 'nu exista';
+            END IF;
+            raise_application_error(-20002, 'nu exista');
+--            DBMS_OUTPUT.PUT_LINE('nu exista');
 end;
 /
 
@@ -69,7 +79,7 @@ CREATE OR REPLACE TYPE array AS varray(1000) of number;
 declare 
 x array;
 begin
-x := findItems(3);
+x := findItems(12);
 for i in 1 .. 3
 loop
     DBMS_OUTPUT.PUT_LINE(x(i));
@@ -102,9 +112,9 @@ begin
     return generate_array;
 end;
 /
+CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\Vals_\OneDrive\Desktop\Proiecte\plsql\V2';
+/
 
-
-set serveroutput on; 
 DECLARE v_fisier UTL_FILE.FILE_TYPE;
 v_sir VARCHAR2(250);
 v_maxim number(10);
@@ -121,6 +131,7 @@ END;
 end loop;
 UTL_FILE.FCLOSE(v_fisier); 
 END; 
+/
 
 Create or replace procedure print_string( IN_string IN varchar2 )
 AS
@@ -143,7 +154,7 @@ End loop;
 DBMS_OUTPUT.PUT_LINE('Text printed: ' || IN_string);
 End;
  -- Procedure created.
-
+/
 
 declare
 x nume_array;
