@@ -89,7 +89,7 @@ end;
 /
 -- --------------------------------------------------------------------------
 
-create or replace type nume_array as varray(5000) of varchar2(255);
+create or replace type nume_array as varray(5000) of varchar2(500);
 /
 
 create or replace function generate(x in number)
@@ -104,7 +104,7 @@ begin
         v_nume := lista_nume(TRUNC(DBMS_RANDOM.VALUE(0,lista_nume.count))+1);
         generate_array(v_i) := v_nume;
         DBMS_OUTPUT.PUT_LINE(v_i || ' ' || v_nume || ' ' || TRUNC(DBMS_RANDOM.VALUE(0,10)) || ' ' || '');
-        insert into streets values (v_i, v_nume, TRUNC(DBMS_RANDOM.VALUE(0,10)), v_nume);
+        insert into streets values (v_i, TRIM(v_nume), TRUNC(DBMS_RANDOM.VALUE(0,10)), v_nume);
         commit;
         
     end loop;
@@ -219,11 +219,15 @@ BEGIN
     
 END;
 /
+CREATE OR REPLACE TYPE string_array as varray(1000) of varchar2(500);
+/
 
+select * from streets where nume_strada like 'Janice Wells';
+/
 CREATE OR REPLACE FUNCTION findStreetByName(x IN VARCHAR2) 
-RETURN nume_array AS
-    return_array nume_array := nume_array(100);
-    v_return varchar2(4000);
+RETURN string_array AS
+    return_array string_array := string_array();
+    v_return varchar2(500);
     v_id INTEGER;
     v_nume_strada varchar2(255);
     v_cost INTEGER;
@@ -232,45 +236,61 @@ RETURN nume_array AS
     v_cursor_id INTEGER;
     v_ok INTEGER;
     v_i INTEGER;
-    v_fisier UTL_FILE.FILE_TYPE;
+--    v_fisier UTL_FILE.FILE_TYPE;
     x_varchar varchar2(255);
+    v_idd int;
 BEGIN
-    v_i := 0;
-    v_fisier:=UTL_FILE.FOPEN('MYDIR','myfile.txt','W');
+    v_i := 1;
+--    v_fisier:=UTL_FILE.FOPEN('MYDIR','myfile.txt','W');
     v_cursor_id := DBMS_SQL.OPEN_CURSOR;
---    x_varchar := cast(x as varchar2);
-    DBMS_SQL.PARSE(v_cursor_id, 'SELECT id, nume_strada, cost, intersectare FROM streets WHERE nume_strada like '' || x || ''', DBMS_SQL.NATIVE);
+    dbms_output.put_line('find street by name');
+    x_varchar := '' || x || '%';
+    SELECT id INTO v_idd FROM streets WHERE nume_strada like x_varchar;
+    dbms_output.put_line(v_idd);
+    DBMS_SQL.PARSE(v_cursor_id, 'SELECT id, nume_strada, cost, intersectare FROM streets WHERE id =' || v_idd, DBMS_SQL.NATIVE);
+--    DBMS_SQL.BIND_VARIABLE(v_cursor_id, ':x', v_nume_strada);
+--    DBMS_SQL.BIND_VARIABLE(v_cursor_id, ':x_varchar', v_nume_strada);
+    dbms_output.put_line('x_varchar = ' || x_varchar);
     DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 1, v_id); 
     DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 2, v_nume_strada, 255); 
     DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 3, v_cost);   
     DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 4, v_intersectare, 255);   
-    
+    dbms_output.put_line('v_id = ' || v_id);
+    dbms_output.put_line('v_nume_strada = ' || v_nume_strada);
     v_ok := DBMS_SQL.EXECUTE(v_cursor_id);
     
     LOOP 
-         IF DBMS_SQL.FETCH_ROWS(v_cursor_id)>0 THEN 
+        dbms_output.put_line('loop');
+         IF DBMS_SQL.FETCH_ROWS(v_cursor_id) > 0 THEN 
             DBMS_SQL.COLUMN_VALUE(v_cursor_id, 1, v_id); 
             DBMS_SQL.COLUMN_VALUE(v_cursor_id, 2, v_nume_strada); 
             DBMS_SQL.COLUMN_VALUE(v_cursor_id, 3, v_cost);
             DBMS_SQL.COLUMN_VALUE(v_cursor_id, 4, v_intersectare);
+            
             v_return := v_id || ' ' || v_nume_strada || ' ' || v_cost || ' ' || v_intersectare;
-            UTL_FILE.PUTF(v_fisier, v_return);
-            v_i := v_i + 1;
+            dbms_output.put_line('v_return = ' || v_return);
+            dbms_output.put_line('v_i = ' || v_i);
             return_array.extend;
             return_array(v_i) := v_return;
+            dbms_output.put_line('return_array = ' || return_array(v_i));
+--            UTL_FILE.PUTF(v_fisier, v_return);.
+            v_i := v_i + 1;
         ELSE 
             EXIT; 
         END IF; 
-    END LOOP;   
-    UTL_FILE.FCLOSE(v_fisier);
-    DBMS_SQL.CLOSE_CURSOR(v_cursor_id);
+    END LOOP;
+--    UTL_FILE.FCLOSE(v_fisier);
     return return_array;
+    DBMS_SQL.CLOSE_CURSOR(v_cursor_id);
     EXCEPTION
         WHEN no_data_found THEN
-            SELECT COUNT(*) INTO counter FROM streets WHERE nume_strada like '%' || x || '%';
+            SELECT COUNT(*) INTO counter FROM streets WHERE nume_strada like x_varchar;
             IF COUNTER = 0 THEN
                 raise_application_error (-20005, 'Nu exista strada cu numele ' || x);
+                return_array(1) := 'Nu exista';
+                return return_array;
             END IF;
+    
     
 END;
 /
@@ -323,4 +343,104 @@ BEGIN
                 raise_application_error (-20004, 'Nu exista strada cu costul ' || x);
             END IF;
 END;
+/
+
+CREATE OR REPLACE FUNCTION findStreetByIntersections(x IN VARCHAR2) 
+RETURN string_array AS
+    return_array string_array := string_array();
+    v_return varchar2(500);
+    v_id INTEGER;
+    v_nume_strada varchar2(255);
+    v_cost INTEGER;
+    v_intersectare varchar2(255);
+    counter INTEGER;
+    v_cursor_id INTEGER;
+    v_ok INTEGER;
+    v_i INTEGER;
+--    v_fisier UTL_FILE.FILE_TYPE;
+    x_varchar varchar2(255);
+    v_idd int;
+    vect array := array(100);
+    v_count int;
+    v_ii int;
+BEGIN
+    v_i := 1;
+    v_ii := 1;
+--    v_fisier:=UTL_FILE.FOPEN('MYDIR','myfile.txt','W');
+    x_varchar := '%' || x || '%';
+    v_cursor_id := DBMS_SQL.OPEN_CURSOR;
+    dbms_output.put_line('find street by name');
+    
+    for c in ( SELECT id INTO v_idd FROM streets WHERE nume_strada like x_varchar )
+    loop
+        vect.extend;
+        vect(v_ii) := c.id;
+        dbms_output.put_line('vect = ' || vect(v_ii));
+        v_ii := v_ii + 1;
+    end loop;
+--    SELECT id INTO v_idd FROM streets WHERE nume_strada like x_varchar;
+--    vect(v_i) := v_idd;
+    dbms_output.put_line('vect = ' || vect(v_i));
+    for v_count in 1..v_ii
+    loop
+    DBMS_SQL.PARSE(v_cursor_id, 'SELECT id, nume_strada, cost, intersectare FROM streets WHERE id =' || vect(1), DBMS_SQL.NATIVE);
+    
+--    EXECUTE IMMEDIATE 'SELECT id, nume_strada, cost, intersectare FROM streets WHERE intersectare like :x_varchar';
+
+--    DBMS_SQL.BIND_VARIABLE(v_cursor_id, ':x', v_nume_strada);
+--    DBMS_SQL.BIND_VARIABLE(v_cursor_id, ':x_varchar', v_nume_strada);
+    dbms_output.put_line('x_varchar = ' || x_varchar);
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 1, v_id); 
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 2, v_nume_strada, 255); 
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 3, v_cost);   
+    DBMS_SQL.DEFINE_COLUMN(v_cursor_id, 4, v_intersectare, 255);   
+    dbms_output.put_line('v_id = ' || v_id);
+    dbms_output.put_line('v_nume_strada = ' || v_nume_strada);
+    v_ok := DBMS_SQL.EXECUTE(v_cursor_id);
+    
+    LOOP 
+        dbms_output.put_line('loop');
+         IF DBMS_SQL.FETCH_ROWS(v_cursor_id) > 0 THEN 
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 1, v_id); 
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 2, v_nume_strada); 
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 3, v_cost);
+            DBMS_SQL.COLUMN_VALUE(v_cursor_id, 4, v_intersectare);
+            
+            v_return := v_id || ' ' || v_nume_strada || ' ' || v_cost || ' ' || v_intersectare;
+            dbms_output.put_line('v_return = ' || v_return);
+            dbms_output.put_line('v_i = ' || v_i);
+            return_array.extend;
+            return_array(v_i) := v_return;
+            dbms_output.put_line('return_array = ' || return_array(v_i));
+--            UTL_FILE.PUTF(v_fisier, v_return);.
+            v_i := v_i + 1;
+        ELSE 
+            EXIT; 
+        END IF; 
+    END LOOP;
+    end loop;
+--    UTL_FILE.FCLOSE(v_fisier);
+    return return_array;
+    DBMS_SQL.CLOSE_CURSOR(v_cursor_id);
+    EXCEPTION
+        WHEN no_data_found THEN
+            SELECT COUNT(*) INTO counter FROM streets WHERE intersectare like x_varchar;
+            IF COUNTER = 0 THEN
+                raise_application_error (-20005, 'Nu exista nicio strada cu numele ' || x);
+                return_array(1) := 'Nu exista';
+                return return_array;
+            END IF;
+    
+    
+END;
+/
+
+declare
+x string_array := string_array(500);
+begin
+x := findStreetByIntersections('Fee');
+--x := findStreetByName('Ozi');
+--dbms_output.put_line(x(1));
+
+end;
 /

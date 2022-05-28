@@ -24,7 +24,7 @@ public class Find {
         String name = scanner.nextLine();
 
         CallableStatement callableStatement = connection.prepareCall("begin ? := findStreetByName(?); end;");
-        callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
+        callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "STRING_ARRAY");
         callableStatement.setString(2, name);
         callableStatement.execute();
         System.out.println("abc");
@@ -73,16 +73,26 @@ public class Find {
         System.out.println("Street name: ");
         String name = scanner.nextLine();
 
-        String sql = "SELECT nume_strada FROM streets WHERE intersectare like ? ";
-        PreparedStatement pstatement = connection.prepareStatement(sql);
-        pstatement.setString(1, '%' + name + '%');
+        CallableStatement callableStatement = connection.prepareCall("begin ? := findStreetByIntersections(?); end;");
+        callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "STRING_ARRAY");
+        callableStatement.setString(2, name);
+        callableStatement.execute();
+        System.out.println("abc");
+        Array result = callableStatement.getArray(1);
 
-        ResultSet rs = pstatement.executeQuery();
+        Object obj = result.getArray();
 
-        while(rs.next()){
-            System.out.print(rs.getString(1) + ", ");
+        Object [] objectArray = (Object []) obj;   // cast it to an array of objects
+
+        StringBuffer buffer = new StringBuffer("");
+        buffer.append(String.valueOf(objectArray[0]));
+//        System.out.println(objectArray.length);
+        for (int j = 1; j < objectArray.length; j++)
+        {
+            buffer.append("\n").append(String.valueOf(objectArray[j]));
+
         }
-        System.out.println();
+        System.out.println(buffer);
     }
 
     public static String findNameById(Connection connection, int id) throws SQLException{

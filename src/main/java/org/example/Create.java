@@ -137,7 +137,9 @@ public class Create {
 
 //        Find.findStreetById(conn.connection);
 //        Find.findStreetByCost(conn.connection);
-        Find.findStreetByName(conn.connection);
+//        Find.findStreetByName(conn.connection);
+
+        Find.findStreetByIntersections(conn.connection);
 
 //        for(Street s: streetList) {
 //            intersections.add(new Intersection(faker.address().streetName(), s.transform(streetList)));
