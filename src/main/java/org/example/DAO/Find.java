@@ -121,4 +121,31 @@ public class Find {
         }
         return keep;
     }
+
+    public static String findNameById2(Connection connection, int id) throws SQLException{
+
+        String sql = "SELECT * FROM items WHERE id = ?";
+        PreparedStatement pstatement = connection.prepareStatement(sql);
+        pstatement.setInt(1, id);
+
+        ResultSet rs = pstatement.executeQuery();
+        String keep = "";
+        while(rs.next()){
+            keep = rs.getString(2);
+        }
+        return keep;
+    }
+    public static int findCostById2(Connection connection, int id) throws SQLException{
+
+        String sql = "SELECT * FROM items WHERE id = ?";
+        PreparedStatement pstatement = connection.prepareStatement(sql);
+        pstatement.setInt(1, id);
+
+        ResultSet rs = pstatement.executeQuery();
+        int keep = -1;
+        while(rs.next()){
+            keep = rs.getInt(3);
+        }
+        return keep;
+    }
 }

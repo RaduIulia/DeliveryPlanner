@@ -5,7 +5,7 @@ import com.github.javafaker.Faker;
 import oracle.jdbc.OracleTypes;
 import org.example.DAO.Add;
 import org.example.DAO.Find;
-import org.example.Entity.Items;
+import org.example.Entity.Item;
 import org.example.Entity.Intersection;
 import org.example.Entity.Street;
 import org.example.Entity.Warehouses;
@@ -13,7 +13,6 @@ import org.example.panel.ConfigPanel;
 import org.example.Algorithm.*;
 
 import java.io.*;
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
@@ -21,11 +20,12 @@ public class Create {
     private final DBConnect conn;
     ConfigPanel configPanel;
     int streets;
+    int items=100;
     private final int[][] distances = new int[10000][10000];
     List<Street> streetList = new LinkedList<>();
     List<Intersection> intersections = new LinkedList<>();
     List<Warehouses> warehousesList = new ArrayList<>();
-    List<Items> itemsList = new ArrayList<>();
+    List<Item> itemList = new ArrayList<>();
 
     public Create(int streets) throws SQLException, IOException {
         this.streets = streets;
@@ -38,7 +38,16 @@ public class Create {
         buildMatrix();
         createTables();
         writeFile();
-
+        //for(int i=0;i<50;i++)
+         //   System.out.print("'"+faker.company().name()+"', ");
+        //for(int i=0;i<100;i++)
+       // {
+       //     System.out.print("'"+faker.food().ingredient()+"'"+", ");
+       //     System.out.print("'"+faker.food().vegetable()+"'"+", ");
+       //     System.out.print("'"+faker.food().fruit()+"'"+", ");
+        //    System.out.print("'"+faker.food().spice()+"'"+", ");
+       //     System.out.print("'"+faker.food().sushi()+"'"+", ");
+       // }
 //        for(int i = 0; i < streets; i++){
 //            Street street = new Street(i, faker.address().streetName(), random.nextInt(10), distances[i]);
 //            streetList.add(street);
@@ -47,18 +56,17 @@ public class Create {
         File fileName = new File("generate.txt");
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-
         for(Street i : streetList){
             System.out.println(i.getName() + " " + i.getCost() + " | " + i.neighborhood(streetList));
             Add.createStreet(conn.connection, i, streetList);
             writer.write("'" + i.getName() + "', ");
         }
         writer.close();
-        for(int i = 0; i < 100; i++){
-            Items items = new Items(i, faker.beer().name(), random.nextInt(5));
-            itemsList.add(items);
-            Add.createItem(conn.connection, items);
-        }
+        //for(int i = 0; i < 100; i++){
+        //    Item item = new Item(i, faker.beer().name(), random.nextInt(5));
+        //   itemList.add(item);
+        //   Add.createItem(conn.connection, item);
+       // }
 
         for(int i = 0; i < 3; i++){
             Warehouses warehouses = new Warehouses(i, faker.name().lastName());
@@ -67,12 +75,56 @@ public class Create {
         }
 
         for(Warehouses w : warehousesList)
-            for(Items i : itemsList)
+            for(Item i : itemList)
                 if(random.nextInt(10) < 7)
                     Add.createInventory(conn.connection, w.getId(), i.getId());
 
+        CallableStatement callableStatement = conn.connection.prepareCall("begin ? := generate_items(?); end;");
+        callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
+        callableStatement.setInt(2, items);
+        callableStatement.execute();
+        Array result23 = callableStatement.getArray(1);
 
-        CallableStatement callableStatement = conn.connection.prepareCall("begin ? := findItems(?); end;");
+        Object obj23 = result23.getArray();
+
+        Object [] objectArray23 = (Object []) obj23;   // cast it to an array of objects
+
+        StringBuffer buffer23 = new StringBuffer("");
+        result23 = callableStatement.getArray(1);
+
+        obj23 = result23.getArray();
+
+        objectArray23 = (Object []) obj23;   // cast it to an array of objects
+
+        buffer23 = new StringBuffer("");
+        buffer23.append(String.valueOf(objectArray23[0]));
+
+        for (int j=1; j < objectArray23.length; j++)
+        {
+            buffer23.append(", ").append(String.valueOf(objectArray23[j]));
+        }
+        String str23[] = buffer23.toString().split(",");
+        List<String> al2 = new ArrayList<String>();
+        al2 = Arrays.asList(str23);
+        for(String s: al2){
+            System.out.println(s);
+        }
+
+        for(int i = 1; i <= items; i++){
+            Item item = new Item(i,Find.findNameById2(conn.connection, i), Find.findCostById2(conn.connection,i));
+            itemList.add(item);
+        }
+
+        System.out.println("START BUFFER\n" + buffer23 + "\nEND BUFFER\n");
+        for(Item i : itemList){
+            System.out.println(i.getId() + " " + i.getName() + " | " + i.getPret());
+
+        }
+        callableStatement.close();
+
+
+
+        callableStatement = conn.connection.prepareCall("begin ? := findItems(?); end;");
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "ARRAY");
         callableStatement.setInt(2, 3);
         callableStatement.execute();
@@ -135,11 +187,13 @@ public class Create {
         }
         callableStatement.close();
 
+
+
 //        Find.findStreetById(conn.connection);
 //        Find.findStreetByCost(conn.connection);
 //        Find.findStreetByName(conn.connection);
 
-        Find.findStreetByIntersections(conn.connection);
+        //Find.findStreetByIntersections(conn.connection);
 
 //        for(Street s: streetList) {
 //            intersections.add(new Intersection(faker.address().streetName(), s.transform(streetList)));

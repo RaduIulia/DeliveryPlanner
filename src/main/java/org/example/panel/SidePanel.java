@@ -38,7 +38,7 @@ public class SidePanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 JTextField textField = new JTextField();
                 textField.setPreferredSize(new Dimension(100, 24));
-                JButton jButton = new JButton("asd");
+                JButton jButton = new JButton("Add new item ");
 
                 mainPanel.add(textField);
                 mainPanel.add(jButton);
@@ -52,7 +52,7 @@ public class SidePanel extends JPanel {
         JTextField jTextField = new JTextField();
         jTextField.setPreferredSize(new Dimension(100, 24));
 
-        JButton jButton = new JButton("Add");
+        JButton jButton = new JButton("Add new item");
 
         jButton.addActionListener(new ActionListener() {
             @Override
