@@ -5,7 +5,7 @@ import com.github.javafaker.Faker;
 import oracle.jdbc.OracleTypes;
 import org.example.DAO.Add;
 import org.example.DAO.Find;
-import org.example.Entity.Item;
+import org.example.Entity.Items;
 import org.example.Entity.Intersection;
 import org.example.Entity.Street;
 import org.example.Entity.Warehouses;
@@ -25,7 +25,7 @@ public class Create {
     List<Street> streetList = new LinkedList<>();
     List<Intersection> intersections = new LinkedList<>();
     List<Warehouses> warehousesList = new ArrayList<>();
-    List<Item> itemList = new ArrayList<>();
+    List<Items> itemsList = new ArrayList<>();
 
     public Create(int streets) throws SQLException, IOException {
         this.streets = streets;
@@ -35,7 +35,6 @@ public class Create {
         Random random = new Random();
 
 //        readFile();
-        buildMatrix();
         createTables();
         writeFile();
         //for(int i=0;i<50;i++)
@@ -75,7 +74,7 @@ public class Create {
         }
 
         for(Warehouses w : warehousesList)
-            for(Item i : itemList)
+            for(Items i : itemsList)
                 if(random.nextInt(10) < 7)
                     Add.createInventory(conn.connection, w.getId(), i.getId());
 
@@ -111,12 +110,12 @@ public class Create {
         }
 
         for(int i = 1; i <= items; i++){
-            Item item = new Item(i,Find.findNameById2(conn.connection, i), Find.findCostById2(conn.connection,i));
-            itemList.add(item);
+            Items items = new Items(i,Find.findNameById2(conn.connection, i), Find.findCostById2(conn.connection,i));
+            itemsList.add(items);
         }
 
         System.out.println("START BUFFER\n" + buffer23 + "\nEND BUFFER\n");
-        for(Item i : itemList){
+        for(Items i : itemsList){
             System.out.println(i.getId() + " " + i.getName() + " | " + i.getPret());
 
         }
@@ -124,9 +123,9 @@ public class Create {
 
 
 
-        callableStatement = conn.connection.prepareCall("begin ? := findItems(?); end;");
+       callableStatement = conn.connection.prepareCall("begin ? := findItems(?); end;");
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "ARRAY");
-        callableStatement.setInt(2, 3);
+        callableStatement.setInt(2, 1);
         callableStatement.execute();
         Array result2 = callableStatement.getArray(1);
 
@@ -140,7 +139,6 @@ public class Create {
         {
             buffer.append(", ").append(String.valueOf(objectArray[j]));
         }
-
         callableStatement = conn.connection.prepareCall("begin ? := generate(?); end;");
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
         callableStatement.setInt(2, streets);
@@ -208,6 +206,7 @@ public class Create {
 //        Find.findStreetById(conn.connection);
 //        Find.findStreetByName(conn.connection);
 //        Find.findStreetByIntersections(conn.connection);
+        buildMatrix();
     }
 
     private void buildMatrix() {
@@ -226,8 +225,8 @@ public class Create {
                     if(random.nextBoolean())  {
                     folosite[i]++;
                     folosite[j]++;
-                    distances[i][j] = random.nextInt(max - min) + min;
-                    distances[j][i] = random.nextInt(max - min) + min;
+                    distances[i][j] = streetList.get(i).getCost();
+                    distances[j][i] =streetList.get(j).getCost();
                 }
             }
         }

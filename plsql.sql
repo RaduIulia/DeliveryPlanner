@@ -33,7 +33,7 @@ v_i INTEGER;
 mesaj VARCHAR2(32767);
 counter INTEGER;
 begin
-    v_i := 0;
+    v_i := 1;
     v_cursor_id := DBMS_SQL.OPEN_CURSOR;
     DBMS_OUTPUT.PUT_LINE('functie findItems');
     DBMS_SQL.PARSE(v_cursor_id, 'SELECT itemId, warehouseId FROM warehouseItems where itemId = ' || x, DBMS_SQL.NATIVE);
@@ -80,10 +80,8 @@ declare
 x array;
 begin
 x := findItems(12);
-for i in 1 .. 3
-loop
-    DBMS_OUTPUT.PUT_LINE(x(i));
-end loop;
+DBMS_OUTPUT.PUT_LINE(x(1));
+
 
 end;
 /
@@ -161,7 +159,7 @@ begin
         v_nume := lista_nume(TRUNC(DBMS_RANDOM.VALUE(0,lista_nume.count))+1);
         generate_array(v_i) := v_nume;
         DBMS_OUTPUT.PUT_LINE(v_i || ' ' || v_nume || ' ' || TRUNC(DBMS_RANDOM.VALUE(0,10)) || ' ' || '');
-        insert into streets values (v_i, TRIM(v_nume), TRUNC(DBMS_RANDOM.VALUE(0,10)), v_nume);
+        insert into streets values (v_i, TRIM(v_nume), TRUNC(DBMS_RANDOM.VALUE(0,10)+1), v_nume);
         commit;
         
     end loop;

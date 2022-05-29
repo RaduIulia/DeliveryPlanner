@@ -1,6 +1,6 @@
 package org.example.DAO;
 
-import org.example.Entity.Item;
+import org.example.Entity.Items;
 import org.example.Entity.Street;
 import org.example.Entity.Warehouses;
 
@@ -26,12 +26,12 @@ public class Add {
         pstatement.close();
 //        statement.execute(sql);
     }
-    public static void createItem(Connection connection, Item item) throws SQLException {
+    public static void createItem(Connection connection, Items items) throws SQLException {
         String sql = "INSERT INTO items VALUES(?, ?, ?)";
         PreparedStatement pstatement = connection.prepareStatement(sql);
-        pstatement.setInt(1, item.getId());
-        pstatement.setString(2, item.getName());
-        pstatement.setInt(3, item.getPret());
+        pstatement.setInt(1, items.getId());
+        pstatement.setString(2, items.getName());
+        pstatement.setInt(3, items.getPret());
 
         pstatement.executeUpdate();
         pstatement.close();
