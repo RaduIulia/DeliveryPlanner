@@ -432,8 +432,22 @@ i INTEGER;
 begin
 x := findStreetByIntersections('Fo');
 --x := findStreetByName('Ozi');
-for i in 1..8 loop
-dbms_output.put_line(x(i));
-end loop;
+--for i in 1..1 loop
+--dbms_output.put_line(x(1));
+--end loop;
 end;
+/
+
+CREATE OR REPLACE FUNCTION checkStockItems(x IN VARCHAR2) 
+RETURN INTEGER AS
+y INTEGER;
+BEGIN
+    y := 0;
+    SELECT COUNT(*) INTO y FROM ITEMS WHERE nume like '%' || x || '%';
+    IF y > 0 THEN
+        RETURN 1;
+    ELSE 
+        RETURN 0;
+    END IF;
+END;
 /

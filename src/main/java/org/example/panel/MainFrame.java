@@ -2,6 +2,7 @@ package org.example.panel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 
 public class MainFrame extends JFrame {
@@ -10,12 +11,12 @@ public class MainFrame extends JFrame {
     ControlPanel controlPanel;
     SidePanel sidePanel;
 
-    public MainFrame(){
+    public MainFrame() throws SQLException {
         super("My App");
         start();
     }
 
-    private void start() {
+    private void start() throws SQLException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         configPanel = new ConfigPanel(this);
