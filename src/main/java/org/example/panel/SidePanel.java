@@ -20,13 +20,13 @@ public class SidePanel extends JPanel {
         this.setLayout(new BorderLayout());
 
         JPanel buttonPanel = new JPanel();
-        JButton button = new JButton("New Item");
+        JButton button = new JButton("Send order");
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JTextField textField = new JTextField();
                 textField.setPreferredSize(new Dimension(100, 24));
-                JButton jButton = new JButton("asd");
+                JButton jButton = new JButton("Add new item ");
 
                 mainPanel.add(textField);
                 mainPanel.add(jButton);
@@ -40,7 +40,7 @@ public class SidePanel extends JPanel {
         JTextField jTextField = new JTextField();
         jTextField.setPreferredSize(new Dimension(100, 24));
 
-        JButton jButton = new JButton("Add");
+        JButton jButton = new JButton("Add new item");
 
         mainPanel.add(jTextField);
         mainPanel.add(jButton);

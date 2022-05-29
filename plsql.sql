@@ -92,6 +92,63 @@ end;
 create or replace type nume_array as varray(5000) of varchar2(500);
 /
 
+
+create or replace function generate_items(x in number)
+return nume_array is
+generare_array nume_array := nume_array(5000);
+lista_iteme nume_array := nume_array('Nori', 'Carrot', 'Figs', 'Jalfrezi Mix', 'Salmon', 'Bay Leaves', 'Lettuce', 'Sultanas', 'Mulled Wine Spices', 'Firefly squid', 'Feta', 'Eggplant', 'Dried Apricots', 'Cardamom Whole', 'Mackerel', 'Vinegar', 'Parsnip', 'Blueberries', 'Fenugreek Leaf', 'Bloody clam', 'Corn Tortilla', 'Beetroot', 'Dried Apricots', 'Cajun Seasoning', 'Mirugai clam', 'Walnut', 'Asian Greens', 'Cantaloupe', 'Mixed Spice', 'Alaskan pink shrimp', 'Mussels', 'Carob Carrot', 'Guava', 'Oregano', 'Orient clam', 'Flaxseed Oil', 'French eschallots', 'Grapefruit', 'Fish Seasoning', 'Oyster', 'Turkey', 'Iceberg lettuce', 'Pomegranate', 'Thai Creen Curry Mix', 'Halfbeak', 'Ricemilk', 'English Spinach', 'Figs', 'Tikka Masala', 'Japanese horse mackerel', 'Broccolini', 'Asian Greens', 'Blueberries', 'Jerk Seasoning', 'Mirugai clam', 'Snowpea sprouts', 'Zucchini', 'Mango', 'Orange Zest', 'White trevally', 'Silverbeet', 'English Spinach', 'Pomegranate', 'Colombo Powder', 'Greater amberjack', 'Iceberg Lettuce', 'Fresh Chillies', 'Peaches', 'Sweet Basil', 'Milt', 'Flour', 'Eggplant', 'Lychees', 'Garlic Chips', 'Japanese style-chunky omelette', 'Cornmeal', 'Beans', 'Blood oranges', 'Pickling Spice', 'Tuna', 'Licorice', 'Celery', 'Sultanas', 'Celery Leaf', 'Abalone', 'Liver', 'Bean Shoots', 'Goji Berry', 'Achiote Seed', 'Oyster', 'Gruyere', 'Capers', 'Currants', 'Sesame Seed', 'Small amberjack', 'Bush Tomato', 'Okra', 'Nectarines', 'Spice Charts', 'Japanese sea bass', 'Avocado', 'Zucchini', 'Sprouts', 'Lime Leaves Ground', 'Japanese style-chunky omelette', 'Wholegrain Bread', 'Cabbage', 'Passionfruit', 'Chilli Pepper', 'Eel', 'Polenta', 'Sweet Potato', 'Bush Tomato', 'Paprika Smoked', 'Crab', 'Papaw', 'Rhubarb', 'Mulberries', 'Colombo Powder', 'Bloody clam', 'Pine Nut', 'Kale', 'Mangosteens', 'Turmeric', 'Trough shells', 'Cottage Cheese', 'Capers', 'Bush Tomato', 'Peppercorns Black', 'Amberjack', 'Borlotti Beans', 'Cornichons', 'Bush Tomato', 'Cinnamon Sticks', 'Abalone', 'Green Tea', 'Artichoke', 'Prunes', 'Methi Leaves', 'Whitespotted conger', 'Blue Swimmer Crab', 'Onion', 'Berries', 'Cloves Whole', 'Japanese horse mackerel', 'Celery Seed', 'Eggplant', 'Snowpeas', 'Pot Marjoram', 'Eel', 'Green Pepper', 'Pumpkin', 'Cavalo', 'Sesame Seed', 'Scallop', 'Duck', 'Chives', 'Peaches', 'Piri Piri Seasoning', 'Rosy seabass', 'Tabasco', 'Bean Shoots', 'Dried Apricots', 'Mango Powder', 'Milt', 'Tea Oil', 'Red cabbage', 'Currants', 'Cumin Seed', 'Skipjack tuna', 'Cumin', 'Cauliflower', 'Cherries', 'Lemon Pepper', 'Bloody clam', 'Kokam', 'Brussels Sprouts', 'Jarrahdale pumpkin', 'Cinnamon Ground', 'Tuna', 'Figs', 'Chinese Cabbage', 'Sprouts', 'Peppercorns Black', 'Japanese spanish mackerel', 'Garlic', 'Radish', 'Cherries', 'Peppercorns Cracked Black', 'Bastard halibut', 'Oysters', 'Purple carrot', 'Corella Pear', 'Lemon Grass', 'Japanese spanish mackerel', 'Passionfruit', 'Cabbage', 'Jarrahdale pumpkin', 'Coriander Seed', 'Amberjack', 'Vermicelli Noodles', 'Eggplant', 'Peaches', 'Mexican Salsa Mix', 'Eel', 'Cottage Cheese', 'Dried Chinese Broccoli', 'Cumquat', 'Pimento Ground', 'Japanese style-chunky omelette', 'Gruyere', 'Snowpea sprouts', 'Lemon', 'Curly Leaf Parsley', 'Eel', 'Kumera', 'Radish', 'Grapes', 'Pepper Black Ground', 'Horned turban', 'Dried Apricots', 'Cos lettuce', 'Nectarines', 'Celery Seed', 'Eel', 'Starfruit', 'Chives', 'Incaberries', 'Cloves Whole', 'Bastard halibut', 'Beef Stock', 'Beans', 'Custard Apples', 'Garlic Powder', 'Japanese style-chunky omelette', 'Curry Leaves', 'Peas', 'Starfruit', 'Lemon Pepper', 'Small amberjack', 'Cayenne', 'Rhubarb', 'Mulberries', 'Mulled Cider Spices', 'Bastard halibut', 'Pine Nut', 'Chilli Pepper', 'Tangelo', 'Mustard Seed White', 'Horned turban', 'Balsamic Vinegar', 'Cornichons', 'Lemon', 'Parsley Flat Leaf', 'Octopus', 'Brown Rice Vinegar', 'Broccolini', 'Butternut pumpkin', 'Cumin Ground', 'Mackerel', 'Mustard Seed', 'Bok Choy', 'Lemon', 'Peppercorns White', 'Bastard halibut', 'Blue Swimmer Crab', 'Potatoes', 'Loquats', 'Cumin Seed Royal', 'Whitespotted conger', 'Sprouts', 'Jicama', 'Figs', 'Parsley', 'Amberjack', 'Lemon', 'Lettuce', 'Longan', 'Fennel Seed', 'Rosy seabass', 'Cream Cheese', 'Red Pepper', 'Melon', 'Chamomile', 'Sea bream', 'Besan', 'Dried Chinese Broccoli', 'Blackberries', 'Thai Creen Curry Mix', 'Mirugai clam', 'Beef Stock', 'Leeks', 'Passionfruit', 'Rice Paper', 'Japanese whiting', 'Liver', 'Carrot', 'Apricots', 'Rosemary', 'Eel', 'Corn Syrup', 'Sun dried tomatoes', 'Mangosteens', 'Garam Masala', 'Rosy seabass', 'Dried Apricots', 'Peppers', 'Sultanas', 'Asafoetida', 'Trough shells', 'Kenchur', 'Butternut lettuce', 'Pineapple', 'Cinnamon Powder', 'Japanese spanish mackerel', 'Butter Beans', 'Zucchini', 'Tangelo', 'Zahtar Spice Mix', 'Halfbeak', 'Almond Oil', 'Peas', 'Figs', 'Chamomile', 'Bloody clam', 'Soy Milk', 'Squash', 'Butternut pumpkin', 'Mace Whole', 'Mackerel', 'Cucumber', 'Eggplant', 'Snowpeas', 'Liquorice Root', 'Greater amberjack', 'Fish Sauce', 'Cos lettuce', 'Banana', 'Parsley', 'Abalone', 'Peppermint', 'Cabbage', 'Tomatoes', 'Chilli Crushed', 'Dotted gizzard shad', 'Mulberries', 'Potatoes', 'Olives', 'Peppercorns Black', 'Alaskan pink shrimp', 'Cashews', 'Fresh Chillies', 'Apricots', 'Fajita Seasoning', 'Tuna', 'Kale', 'Potatoes', 'Nectarines', 'Mulled Wine Spices', 'Botan shrimp', 'Green Beans', 'Beetroot', 'Grapefruit', 'Thai Creen Curry Mix', 'Japanese sea bass', 'Fresh Chillies', 'Spinach', 'Goji Berry', 'Rose Baie', 'Firefly squid', 'Banana', 'Carrot', 'Cavalo', 'Mustard Seed White', 'Japanese sea bass', 'French Eschallots', 'Beans', 'Feijoa', 'Lemon Pepper', 'Trout', 'Radish', 'Cornichons', 'Fingerlime', 'Oregano', 'Salmon', 'Cous Cous', 'Garlic', 'Blackberries', 'Pickling Spice', 'Small amberjack', 'Cottage Cheese', 'Celery', 'Figs', 'Cassia Bark', 'Squid', 'Blue Eye Trevalla', 'Squash', 'Prunes', 'Juniper Berries', 'Whitespotted conger', 'Walnut', 'Celery', 'Bush Tomato', 'Tarragon', 'Eel', 'Sesame Oil', 'Onion', 'Pineapple', 'Allspice Whole', 'Japanese whiting', 'White Bread', 'Okra', 'Pomegranate', 'Pepper Black Ground', 'Alaskan pink shrimp', 'Tarragon', 'Butternut lettuce', 'Sultanas', 'Mustard Seed Black', 'Mirugai clam', 'Tempeh', 'Onion', 'Elderberry', 'Celery Salt', 'Tuna', 'Flaxseed Oil', 'Peas', 'Longan', 'Thai Red Curry Mix', 'Scallop', 'Asparagus', 'Asparagus', 'Dragonfruit', 'Zahtar Spice Mix', 'Trough shells', 'Haricot Beans', 'Purple carrot', 'Kiwi Fruit', 'Curry Thai Green', 'Eel', 'Macadamia Oil', 'Raspberry', 'Loquats', 'Ras-el-Hanout', 'Trout', 'Rice Paper', 'Jerusalem Artichoke', 'Pineapple', 'Creole Seasoning', 'Small amberjack', 'Green Tea', 'Broccoli', 'Peaches', 'Bay Leaves', 'Abalone', 'Vermicelli Noodles', 'Cauliflower', 'Blackberries', 'Lemon Pepper', 'Scallop', 'Red Pepper', 'Artichoke', 'Cantaloupe', 'Korma Curry Powder', 'Halfbeak', 'Anchovies', 'Kohlrabi', 'Nectarines', 'Mustard Powder', 'Firefly squid', 'Pork', 'Spinach', 'Bush Tomato', 'Curry Madras Medium', 'Crab', 'Oats', 'Cucumber', 'Snowpeas', 'Chilli Crushed', 'Milt', 'Juniper Berries', 'French eschallots', 'Cherries', 'Peppercorns Szechwan', 'Japanese style-chunky omelette', 'Porcini Mushrooms', 'Red Pepper', 'Custard Apples Daikon', 'Nigella', 'Whitespotted conger', 'Curry Powder', 'Beans', 'Loquats', 'Ajwan Seed', 'Greater amberjack', 'Curry Powder', 'Fresh Chillies', 'Cranberry', 'Mulled Cider Spices', 'Whitespotted conger');
+v_item varchar2(255);
+begin
+    delete from warehouseitems;
+    delete from warehouses;
+    delete from items;
+    for v_i in 1..x loop
+        generare_array.extend;
+        v_item := lista_iteme(TRUNC(DBMS_RANDOM.VALUE(0,lista_iteme.count))+1);
+        generare_array(v_i) := v_item;
+         DBMS_OUTPUT.PUT_LINE(v_i || ' ' || v_item || ' ' || TRUNC(DBMS_RANDOM.VALUE(0,100)) );
+        insert into items values (v_i, TRIM(v_item),TRUNC(DBMS_RANDOM.VALUE(0,100)));
+        commit;
+        end loop;
+    
+    return generare_array;
+end;
+/
+
+declare
+x nume_array;
+begin
+x := generate_items(15);
+end;
+
+create or replace function generate_warehouse(x in number)
+return nume_array is
+generare_array nume_array := nume_array(5000);
+lista_nume nume_array := nume_array('Maggio-Conn', 'Gerhold, Schmidt and Dickinson', 'Dibbert-Jaskolski', 'Boyle, Rice and Dare', 'Witting LLC', 'Von, Schowalter and Cummerata', 'Hand-Wilderman', 'Wunsch-Predovic', 'Conn, Volkman and Stanton', 'Conroy, Lehner and Gorczany', 'Steuber-Walsh', 'Wilkinson and Sons', 'Swaniawski Inc', 'Gleichner and Sons', 'Vandervort, Hickle and Kautzer', 'Hagenes LLC', 'Cronin, West and Rice', 'OKon and Sons', 'Dietrich, Towne and Torphy', 'Stark Group', 'Swift and Sons', 'Bayer Group', 'Moore, Gerlach and Zboncak', 'Walsh and Sons', 'Leuschke Group', 'Crona-Trantow', 'OConnell LLC', 'Blanda Inc', 'Casper, Ebert and Lockman', 'Lesch, Wyman and Bernier', 'Pfannerstill Group', 'Collins, Lebsack and Hilpert', 'Friesen, Stark and Doyle', 'Bogan and Sons', 'Lang and Sons', 'Hahn, Ratke and Donnelly', 'Collier Inc', 'Brakus-Maggio', 'Satterfield, Schneider and Carroll', 'Hessel and Sons', 'Flatley-Hills', 'Sanford-Quitzon', 'Lebsack-Simonis', 'Ruecker Inc', 'Yundt Group', 'Jakubowski, Cummings and Hauck', 'Wiza Group', 'Bartell, Lindgren and Lueilwitz', 'Stracke-Stamm', 'Dietrich and Sons');
+v_num varchar2(255);
+begin
+    delete from warehouseitems;
+    delete from warehouses;
+    delete from items;
+    for v_i in 1..x loop
+        generare_array.extend;
+        v_num := lista_nume(TRUNC(DBMS_RANDOM.VALUE(0,lista_nume.count))+1);
+        generare_array(v_i) := v_num;
+         DBMS_OUTPUT.PUT_LINE(v_i || ' ' || v_num );
+        insert into warehouses values (v_i, TRIM(v_num));
+        commit;
+        end loop;
+    
+    return generare_array;
+end;
+/
+
+declare
+x nume_array;
+begin
+x := generate_warehouse(15);
+end;
+
 create or replace function generate(x in number)
 return nume_array is
 generate_array nume_array := nume_array(5000);
