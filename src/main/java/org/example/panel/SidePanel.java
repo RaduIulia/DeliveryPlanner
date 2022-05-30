@@ -15,6 +15,7 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SidePanel extends JPanel {
     final MainFrame mainFrame;
@@ -36,12 +37,7 @@ public class SidePanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JTextField textField = new JTextField();
-                textField.setPreferredSize(new Dimension(100, 24));
-                JButton jButton = new JButton("Add new item ");
 
-                mainPanel.add(textField);
-                mainPanel.add(jButton);
             }
         });
         mainPanel.setBackground(Color.BLUE);
@@ -56,36 +52,79 @@ public class SidePanel extends JPanel {
         jButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                CallableStatement callableStatement = null;
-                int y = 0;
-                try {
-                    callableStatement = conn.connection.prepareCall("begin ? := checkStockItems(?); end;");
-                    callableStatement.registerOutParameter(1, OracleTypes.NUMBER);
-                    callableStatement.setString(2, jTextField.getText());
-                    callableStatement.execute();
-                    int result = callableStatement.getInt(1);
-                    callableStatement.close();
-
-                    if (result == 0){
-                        System.out.println("Aia e, nu avem pe stoc");
-                    }else {
-                        items.add(jTextField.getText());
-                        System.out.println(items);
-                        System.out.println("Are bajatu'");
-                    }
-
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-
-
+                checkItems(jTextField, items);
             }
         });
 
-        mainPanel.add(jTextField);
-        mainPanel.add(jButton);
+        JTextField deleteTextField = new JTextField();
+        deleteTextField.setPreferredSize(new Dimension(100, 24));
 
+        JButton deleteButton = new JButton("Remove item");
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeItem(deleteTextField, items);
+                System.out.println("Buton apasat");
+            }
+        });
+
+        mainPanel.add(jTextField, BorderLayout.CENTER);
+        mainPanel.add(jButton, BorderLayout.CENTER);
+        mainPanel.add(deleteTextField, BorderLayout.CENTER);
+        mainPanel.add(deleteButton, BorderLayout.CENTER);
+
+
+    }
+    public void checkItems(JTextField jTextField, List<String> items){
+        CallableStatement callableStatement = null;
+        int y = 0;
+        try {
+            callableStatement = conn.connection.prepareCall("begin ? := checkStockItems(?); end;");
+            callableStatement.registerOutParameter(1, OracleTypes.VARCHAR);
+            callableStatement.setString(2, jTextField.getText());
+            callableStatement.execute();
+            String result = callableStatement.getString(1);
+            callableStatement.close();
+            System.out.println(result);
+            if (Objects.equals(result, "0")){
+                System.out.println("Produsul nu exista pe stoc.");
+            }else if (Objects.equals(result, "2")){
+                System.out.println("Avem mai multe produse cu acest nume. Introduceti numele complet.");
+            }
+            else{
+                items.add(result);
+                System.out.println(items);
+                System.out.println("Produs adaugat in lista de cumparaturi!");
+            }
+
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    public void removeItem(JTextField jTextField, List<String> items){
+        CallableStatement callableStatement = null;
+        int y = 0;
+        try {
+            callableStatement = conn.connection.prepareCall("begin ? := checkStockItems(?); end;");
+            callableStatement.registerOutParameter(1, OracleTypes.VARCHAR);
+            callableStatement.setString(2, jTextField.getText());
+            callableStatement.execute();
+            String result = callableStatement.getString(1);
+            callableStatement.close();
+
+            if (Objects.equals(result, "0")){
+                System.out.println("Produsul nu exista in lista de cumparaturi!");
+            }else if (Objects.equals(result, "2")){
+                System.out.println("Avem mai multe produse cu acest nume. Introduceti numele complet.");
+            }
+            else{
+                items.remove(result);
+                System.out.println("Produs scos din lista de cumparaturi!");
+                System.out.println(items);
+            }
+
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

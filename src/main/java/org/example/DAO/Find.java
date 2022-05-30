@@ -14,7 +14,7 @@ public class Find {
         callableStatement.registerOutParameter(1, OracleTypes.VARCHAR);
         callableStatement.setInt(2, id);
         callableStatement.execute();
-        System.out.println("abc");
+
         String result = callableStatement.getString(1);
 
         System.out.println(result);
@@ -27,7 +27,7 @@ public class Find {
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "STRING_ARRAY");
         callableStatement.setString(2, name);
         callableStatement.execute();
-        System.out.println("abc");
+
         Array result = callableStatement.getArray(1);
 
         Object obj = result.getArray();
@@ -52,7 +52,7 @@ public class Find {
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
         callableStatement.setInt(2, cost);
         callableStatement.execute();
-        System.out.println("abc");
+
         Array result = callableStatement.getArray(1);
 
         Object obj = result.getArray();
@@ -77,7 +77,7 @@ public class Find {
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "STRING_ARRAY");
         callableStatement.setString(2, name);
         callableStatement.execute();
-        System.out.println("abc");
+
         Array result = callableStatement.getArray(1);
 
         Object obj = result.getArray();
