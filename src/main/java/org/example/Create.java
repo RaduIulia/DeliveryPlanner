@@ -132,9 +132,9 @@ public class Create {
 
         for(Street s : streetList){
             callableStatement = conn.connection.prepareCall("UPDATE streets SET intersectare = ? WHERE id = ?");
-            System.out.println("s.getName() = " + s.getName());
+           // System.out.println("s.getName() = " + s.getName());
             String neighborhood = String.valueOf(s.neighborhood(streetList));
-            System.out.println("vecini: " + neighborhood);
+           // System.out.println("vecini: " + neighborhood);
             callableStatement.setString(1, neighborhood);
             callableStatement.setInt(2, s.getId());
             callableStatement.execute();
@@ -143,7 +143,6 @@ public class Create {
 
         for(Street i : streetList){
             System.out.println(i.getName() + " " + i.getCost() + " | " + i.neighborhood(streetList));
-
         }
 
         //mini statistica strazi
