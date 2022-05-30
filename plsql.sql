@@ -212,7 +212,7 @@ type vector_linie IS VARRAY(5) OF INTEGER;
 v_per_numar vector_linie;
 BEGIN v_fisier:=UTL_FILE.FOPEN('MYDIR','file.txt','R');
 v_per_numar := vector_linie(0,0,0,0,0);
-v_total := 0;
+v_total := 1;
 loop
 BEGIN UTL_FILE.GET_LINE(v_fisier,v_sir);
 v_total := v_total+1;
@@ -229,7 +229,7 @@ v_return := '';
  if( v_per_numar(1) > 0 )
     then
 --dbms_output.put_line(' Procentul de strazi care se intersecteaza cu o singura strada este: ' ||  100 / (v_total / v_per_numar(1))||'%.'); 
-      v_return := v_return||'Procentul de strazi care se intersecteaza cu o singura strada este: ' ||  100 / (v_total / v_per_numar(1))||'%.'|| chr(10);
+      v_return := v_return||'Procentul de strazi care se intersecteaza cu o singura strada este: ' ||  trunc(100 / (v_total / v_per_numar(1)),2)||'%.'|| chr(10);
       else
      -- dbms_output.put_line(' Procentul de strazi care se intersecteaza cu o singura strada este: ' || 0 ||'%.'); 
        v_return := v_return||'Procentul de strazi care se intersecteaza cu o singura strada este: ' || 0 ||'%.'|| chr(10);
@@ -238,7 +238,7 @@ END IF;
 FOR i in 2 .. 5 LOOP 
     if( v_per_numar(i) > 0 )
     then
-    v_return := v_return||'Procentul de strazi care se intersecteaza cu alte '|| i || ' strazi este: ' ||  100 / (v_total / v_per_numar(i))||'%.'|| chr(10);
+    v_return := v_return||'Procentul de strazi care se intersecteaza cu alte '|| i || ' strazi este: ' ||  trunc(100 / (v_total / v_per_numar(i)),2)||'%.'|| chr(10);
     --dbms_output.put_line(' Procentul de strazi care se intersecteaza cu alte '|| i || ' strazi este: ' ||  100 / (v_total / v_per_numar(i))||'%.'); 
       else   
       v_return := v_return|| 'Procentul de strazi care se intersecteaza cu alte '|| i || ' strazi este: ' ||  0 ||'%.'|| chr(10);
