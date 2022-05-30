@@ -519,15 +519,17 @@ end;
 /
 
 CREATE OR REPLACE FUNCTION checkStockItems(x IN VARCHAR2) 
-RETURN INTEGER AS
+RETURN VARCHAR2 AS
 y INTEGER;
+v_nume varchar2(255);
 BEGIN
     y := 0;
     SELECT COUNT(*) INTO y FROM ITEMS WHERE nume like '%' || x || '%';
     IF y > 0 THEN
-        RETURN 1;
+        SELECT nume into v_nume from items where nume like '%' || x || '%';
+        RETURN v_nume;
     ELSE 
-        RETURN 0;
+        RETURN '0';
     END IF;
 END;
 /

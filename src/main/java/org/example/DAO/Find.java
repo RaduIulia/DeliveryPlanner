@@ -14,7 +14,7 @@ public class Find {
         callableStatement.registerOutParameter(1, OracleTypes.VARCHAR);
         callableStatement.setInt(2, id);
         callableStatement.execute();
-        System.out.println("abc");
+
         String result = callableStatement.getString(1);
 
         System.out.println(result);
@@ -27,7 +27,7 @@ public class Find {
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "STRING_ARRAY");
         callableStatement.setString(2, name);
         callableStatement.execute();
-        System.out.println("abc");
+
         Array result = callableStatement.getArray(1);
 
         Object obj = result.getArray();
@@ -52,7 +52,7 @@ public class Find {
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
         callableStatement.setInt(2, cost);
         callableStatement.execute();
-        System.out.println("abc");
+
         Array result = callableStatement.getArray(1);
 
         Object obj = result.getArray();
@@ -77,7 +77,7 @@ public class Find {
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "STRING_ARRAY");
         callableStatement.setString(2, name);
         callableStatement.execute();
-        System.out.println("abc");
+
         Array result = callableStatement.getArray(1);
 
         Object obj = result.getArray();
@@ -106,6 +106,7 @@ public class Find {
         while(rs.next()){
             keep = rs.getString(2);
         }
+        pstatement.close();
         return keep;
     }
     public static int findCostById(Connection connection, int id) throws SQLException{
@@ -119,6 +120,7 @@ public class Find {
         while(rs.next()){
             keep = rs.getInt(3);
         }
+        pstatement.close();
         return keep;
     }
 
@@ -133,6 +135,7 @@ public class Find {
         while(rs.next()){
             keep = rs.getString(2);
         }
+        pstatement.close();
         return keep;
     }
     public static int findCostById2(Connection connection, int id) throws SQLException{
@@ -146,6 +149,7 @@ public class Find {
         while(rs.next()){
             keep = rs.getInt(3);
         }
+        pstatement.close();
         return keep;
     }
     public static String findWarehouseNameById(Connection connection, int id) throws SQLException{
@@ -159,6 +163,7 @@ public class Find {
         while(rs.next()){
             keep = rs.getString(2);
         }
+        pstatement.close();
         return keep;
     }
 }
