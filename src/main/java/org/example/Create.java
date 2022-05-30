@@ -179,13 +179,13 @@ public class Create {
 
 
         for(int i = 1; i <= wh; i++){
-            Warehouses warehouses = new Warehouses(i, Find.findWarehouseNameById(conn.connection, i));
+            Warehouses warehouses = new Warehouses(i, Find.findWarehouseNameById(conn.connection, i),Find.findWarehouseAdressById(conn.connection, i));
             warehousesList.add(warehouses);
         }
 
         System.out.println("warehouses: ");
         for(Warehouses i : warehousesList){
-            System.out.println(i.getId() + " " + i.getName());
+            System.out.println(i.getId() + " " + i.getName()+" "+i.getId_strada());
         }
         callableStatement.close();
 
@@ -303,7 +303,7 @@ public class Create {
         sql = "CREATE TABLE items (id numeric(5) PRIMARY KEY , nume varchar2(255), pret numeric)";
         stmt.execute(sql);
 
-        sql = "CREATE TABLE warehouses (id numeric(5) PRIMARY KEY , nume varchar2(255))";
+        sql = "CREATE TABLE warehouses (id numeric(5) PRIMARY KEY , nume varchar2(255), id_strada numeric(5))";
         stmt.execute(sql);
 
         sql = "CREATE TABLE warehouseItems (itemId numeric(5) NOT NULL , warehouseId numeric(5) NOT NULL, FOREIGN KEY (itemId) references items(id)," +
