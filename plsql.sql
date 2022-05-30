@@ -22,9 +22,16 @@ return y;
 end;
 /
 
+declare
+x array;
+begin
+x := findItems(3);
+end;
+/
+
 create or replace function findItems(x in number)
 return array is 
-v_array array := array(1000);
+v_array array := array(500);
 v_ok int;
 v_cursor_id INTEGER;
 v_item_id INTEGER;
@@ -118,6 +125,7 @@ x nume_array;
 begin
 x := generate_items(15);
 end;
+/
 
 create or replace function generate_warehouse(x in number)
 return nume_array is
@@ -125,9 +133,9 @@ generare_array nume_array := nume_array(5000);
 lista_nume nume_array := nume_array('Maggio-Conn', 'Gerhold, Schmidt and Dickinson', 'Dibbert-Jaskolski', 'Boyle, Rice and Dare', 'Witting LLC', 'Von, Schowalter and Cummerata', 'Hand-Wilderman', 'Wunsch-Predovic', 'Conn, Volkman and Stanton', 'Conroy, Lehner and Gorczany', 'Steuber-Walsh', 'Wilkinson and Sons', 'Swaniawski Inc', 'Gleichner and Sons', 'Vandervort, Hickle and Kautzer', 'Hagenes LLC', 'Cronin, West and Rice', 'OKon and Sons', 'Dietrich, Towne and Torphy', 'Stark Group', 'Swift and Sons', 'Bayer Group', 'Moore, Gerlach and Zboncak', 'Walsh and Sons', 'Leuschke Group', 'Crona-Trantow', 'OConnell LLC', 'Blanda Inc', 'Casper, Ebert and Lockman', 'Lesch, Wyman and Bernier', 'Pfannerstill Group', 'Collins, Lebsack and Hilpert', 'Friesen, Stark and Doyle', 'Bogan and Sons', 'Lang and Sons', 'Hahn, Ratke and Donnelly', 'Collier Inc', 'Brakus-Maggio', 'Satterfield, Schneider and Carroll', 'Hessel and Sons', 'Flatley-Hills', 'Sanford-Quitzon', 'Lebsack-Simonis', 'Ruecker Inc', 'Yundt Group', 'Jakubowski, Cummings and Hauck', 'Wiza Group', 'Bartell, Lindgren and Lueilwitz', 'Stracke-Stamm', 'Dietrich and Sons');
 v_num varchar2(255);
 begin
-    delete from warehouseitems;
-    delete from warehouses;
-    delete from items;
+--    delete from warehouseitems;
+--    delete from warehouses;
+--    delete from items;
     for v_i in 1..x loop
         generare_array.extend;
         v_num := lista_nume(TRUNC(DBMS_RANDOM.VALUE(0,lista_nume.count))+1);
@@ -167,10 +175,27 @@ begin
     return generate_array;
 end;
 /
+
+create or replace procedure createInventory(items in number, warehouses in number) IS
+v_w int;
+v_i int;
+begin
+    for v_w in 1..warehouses
+    loop
+        for v_i in 1..items
+        loop
+            if (DBMS_RANDOM.VALUE(0, 100) < 70) then
+                insert into warehouseItems values(v_i, v_w);
+            end if;
+        end loop;
+    end loop;
+end;
+/
 CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\Vals_\OneDrive\Desktop\Proiecte\plsql\V2';
 /
 
 CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\iulia\IdeaProjects\V2';
+/
 CREATE Or REPLACE TYPE vector_linie AS  VARRAY(1000) OF INTEGER; 
 
 DECLARE v_fisier UTL_FILE.FILE_TYPE;

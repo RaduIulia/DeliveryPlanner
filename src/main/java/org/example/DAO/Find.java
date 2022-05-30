@@ -148,4 +148,17 @@ public class Find {
         }
         return keep;
     }
+    public static String findWarehouseNameById(Connection connection, int id) throws SQLException{
+
+        String sql = "SELECT * FROM warehouses WHERE id = ?";
+        PreparedStatement pstatement = connection.prepareStatement(sql);
+        pstatement.setInt(1, id);
+
+        ResultSet rs = pstatement.executeQuery();
+        String keep = "";
+        while(rs.next()){
+            keep = rs.getString(2);
+        }
+        return keep;
+    }
 }

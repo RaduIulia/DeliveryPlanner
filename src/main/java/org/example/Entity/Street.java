@@ -2,6 +2,7 @@ package org.example.Entity;
 
 import com.github.javafaker.Faker;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class Street {
 
         int i = 0;
         for(Street st : streetList){
-            if(adjacency[i] !=0  && st.getName() != null) {
+            if(adjacency[i] != 0  && st.getName() != null) {
                 ddd.add(st.getName() + " - " + st.getCost());
             }
             i++;
