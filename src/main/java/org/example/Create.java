@@ -35,7 +35,6 @@ public class Create {
         Random random = new Random();
 
         createTables();
-        writeFile();
 
 //        for(int i = 0; i < streets; i++){
 //            Street street = new Street(i, faker.address().streetName(), random.nextInt(10), distances[i]);
@@ -128,6 +127,9 @@ public class Create {
 
         callableStatement.close();
 
+        buildMatrix();
+        writeFile();
+
         for(Street s : streetList){
             callableStatement = conn.connection.prepareCall("UPDATE streets SET intersectare = ? WHERE id = ?");
             System.out.println("s.getName() = " + s.getName());
@@ -143,6 +145,16 @@ public class Create {
             System.out.println(i.getName() + " " + i.getCost() + " | " + i.neighborhood(streetList));
 
         }
+
+        //mini statistica strazi
+
+        callableStatement = conn.connection.prepareCall("begin ? := ministatistica_strazi(); end;");
+        callableStatement.registerOutParameter(1, OracleTypes.VARCHAR);
+        callableStatement.execute();
+        String result_string = callableStatement.getString(1);
+        System.out.print(result_string);
+
+        callableStatement.close();
 
         //generam depozitele
         int wh = 5;
@@ -204,7 +216,6 @@ public class Create {
         }
         System.out.println(buffer);
 
-        buildMatrix();
     }
 
     private void buildMatrix() {
