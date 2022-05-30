@@ -47,6 +47,26 @@ public class Graph {
             isSetMatrix[destination][source] = true;
         }
     }
+
+    public void deleteNode(int Node)
+    {
+      for(int i=0;i<numOfNodes;i++)
+          matrix[Node][i]=0;
+      for(int i=0;i<numOfNodes;i++)
+          matrix[i][Node]=0;
+      numOfNodes--;
+    }
+
+    public void deleteEdge(int source, int destination)
+    {
+        matrix[source][destination] = 0;
+        isSetMatrix[source][destination] = false;
+
+        if (!directed) {
+            matrix[destination][source] = 0;
+            isSetMatrix[destination][source] = false;
+        }
+    }
     public int getNumOfNodes() {
         return numOfNodes;
     }

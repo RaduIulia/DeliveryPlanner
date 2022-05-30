@@ -87,7 +87,7 @@ declare
 x array;
 begin
 x := findItems(12);
-DBMS_OUTPUT.PUT_LINE(x(1));
+DBMS_OUTPUT.PUT_LINE(x);
 
 
 end;
@@ -129,19 +129,41 @@ end;
 
 create or replace function generate_warehouse(x in number)
 return nume_array is
+type NumberVarray is varray(500) of NUMERIC(10);
+myArray NumberVarray := NumberVarray();
 generare_array nume_array := nume_array(5000);
 lista_nume nume_array := nume_array('Maggio-Conn', 'Gerhold, Schmidt and Dickinson', 'Dibbert-Jaskolski', 'Boyle, Rice and Dare', 'Witting LLC', 'Von, Schowalter and Cummerata', 'Hand-Wilderman', 'Wunsch-Predovic', 'Conn, Volkman and Stanton', 'Conroy, Lehner and Gorczany', 'Steuber-Walsh', 'Wilkinson and Sons', 'Swaniawski Inc', 'Gleichner and Sons', 'Vandervort, Hickle and Kautzer', 'Hagenes LLC', 'Cronin, West and Rice', 'OKon and Sons', 'Dietrich, Towne and Torphy', 'Stark Group', 'Swift and Sons', 'Bayer Group', 'Moore, Gerlach and Zboncak', 'Walsh and Sons', 'Leuschke Group', 'Crona-Trantow', 'OConnell LLC', 'Blanda Inc', 'Casper, Ebert and Lockman', 'Lesch, Wyman and Bernier', 'Pfannerstill Group', 'Collins, Lebsack and Hilpert', 'Friesen, Stark and Doyle', 'Bogan and Sons', 'Lang and Sons', 'Hahn, Ratke and Donnelly', 'Collier Inc', 'Brakus-Maggio', 'Satterfield, Schneider and Carroll', 'Hessel and Sons', 'Flatley-Hills', 'Sanford-Quitzon', 'Lebsack-Simonis', 'Ruecker Inc', 'Yundt Group', 'Jakubowski, Cummings and Hauck', 'Wiza Group', 'Bartell, Lindgren and Lueilwitz', 'Stracke-Stamm', 'Dietrich and Sons');
 v_num varchar2(255);
+v_total number(5);
+v_random number(5);
+v_ok boolean;
 begin
 --    delete from warehouseitems;
 --    delete from warehouses;
 --    delete from items;
+for i in 1..500
+      loop
+      myArray.extend();
+        myArray(i):= 0;
+      end loop;  
+SELECT COUNT(id) INTO v_total FROM streets;
+DBMS_OUTPUT.PUT_LINE(v_total );
     for v_i in 1..x loop
         generare_array.extend;
         v_num := lista_nume(TRUNC(DBMS_RANDOM.VALUE(0,lista_nume.count))+1);
         generare_array(v_i) := v_num;
+        v_ok := false;
+        WHILE v_ok != true
+LOOP
+    v_random := DBMS_RANDOM.VALUE(1,v_total);
+    if myArray(v_random) = 0
+    then 
+    myArray(v_random) :=1;
+    v_ok := true;
+    end if;
+END LOOP;
          DBMS_OUTPUT.PUT_LINE(v_i || ' ' || v_num );
-        insert into warehouses values (v_i, TRIM(v_num));
+        insert into warehouses values (v_i, TRIM(v_num),v_random);
         commit;
         end loop;
     
@@ -149,10 +171,12 @@ begin
 end;
 /
 
+SELECT COUNT(id) FROM streets;
+
 declare
 x nume_array;
 begin
-x := generate_warehouse(15);
+x := generate_warehouse(5);
 end;
 
 create or replace function generate(x in number)
@@ -206,30 +230,33 @@ v_sir VARCHAR2(250);
 v_maxim number(10);
 v_index_maxim number(10);
 v_per_linie number(10);
-v_total number(10);
+v_ramase number(10);
+v_strazi number(10);
 v_return varchar2(500);
 type vector_linie IS VARRAY(5) OF INTEGER; 
 v_per_numar vector_linie;
 BEGIN v_fisier:=UTL_FILE.FOPEN('MYDIR','file.txt','R');
 v_per_numar := vector_linie(0,0,0,0,0);
-v_total := 1;
+v_strazi := 1;
 loop
 BEGIN UTL_FILE.GET_LINE(v_fisier,v_sir);
-v_total := v_total+1;
 --DBMS_OUTPUT.PUT_LINE(v_sir);
 v_per_linie := citire_si_prelucrare_linie(v_sir);
 --DBMS_OUTPUT.PUT_LINE(v_per_linie);
 v_per_numar(v_per_linie) := v_per_numar(v_per_linie)+1;
+v_strazi := v_strazi +1;
 EXCEPTION 
 WHEN NO_DATA_FOUND 
 THEN EXIT ;
 END; 
 end loop;
-v_return := '';
+v_strazi:= v_strazi-1;
+v_ramase := v_strazi -(v_per_numar(1)+v_per_numar(2)+v_per_numar(3)+v_per_numar(4)+v_per_numar(5));
+v_return := 'Procentul de strazi care nu se intersecteaza cu nicio strada este: '||v_ramase||'%.'|| chr(10);
  if( v_per_numar(1) > 0 )
     then
 --dbms_output.put_line(' Procentul de strazi care se intersecteaza cu o singura strada este: ' ||  100 / (v_total / v_per_numar(1))||'%.'); 
-      v_return := v_return||'Procentul de strazi care se intersecteaza cu o singura strada este: ' ||  trunc(100 / (v_total / v_per_numar(1)),2)||'%.'|| chr(10);
+      v_return := v_return||'Procentul de strazi care se intersecteaza cu o singura strada este: ' ||  trunc(100 / (v_strazi / v_per_numar(1)),2)||'%.'|| chr(10);
       else
      -- dbms_output.put_line(' Procentul de strazi care se intersecteaza cu o singura strada este: ' || 0 ||'%.'); 
        v_return := v_return||'Procentul de strazi care se intersecteaza cu o singura strada este: ' || 0 ||'%.'|| chr(10);
@@ -238,7 +265,7 @@ END IF;
 FOR i in 2 .. 5 LOOP 
     if( v_per_numar(i) > 0 )
     then
-    v_return := v_return||'Procentul de strazi care se intersecteaza cu alte '|| i || ' strazi este: ' ||  trunc(100 / (v_total / v_per_numar(i)),2)||'%.'|| chr(10);
+    v_return := v_return||'Procentul de strazi care se intersecteaza cu alte '|| i || ' strazi este: ' ||  trunc(100 / (v_strazi / v_per_numar(i)),2)||'%.'|| chr(10);
     --dbms_output.put_line(' Procentul de strazi care se intersecteaza cu alte '|| i || ' strazi este: ' ||  100 / (v_total / v_per_numar(i))||'%.'); 
       else   
       v_return := v_return|| 'Procentul de strazi care se intersecteaza cu alte '|| i || ' strazi este: ' ||  0 ||'%.'|| chr(10);
@@ -280,7 +307,7 @@ declare
 x varchar2(500);
 begin
 x := ministatistica_strazi();
---DBMS_OUTPUT.PUT_LINE(x);
+DBMS_OUTPUT.PUT_LINE(x);
 end;
 
 

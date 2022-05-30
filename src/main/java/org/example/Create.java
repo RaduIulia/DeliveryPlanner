@@ -26,6 +26,8 @@ public class Create {
     List<Intersection> intersections = new LinkedList<>();
     List<Warehouses> warehousesList = new ArrayList<>();
     List<Items> itemsList = new ArrayList<>();
+    List<Integer> toVisit=new ArrayList<>();
+    Graph graf;
 
     public Create(int streets) throws SQLException, IOException {
         this.streets = streets;
@@ -186,6 +188,8 @@ public class Create {
         System.out.println("warehouses: ");
         for(Warehouses i : warehousesList){
             System.out.println(i.getId() + " " + i.getName()+" "+i.getId_strada());
+            toVisit.add(i.getId_strada());
+            //System.out.println(toVisit);
         }
         callableStatement.close();
 
@@ -215,7 +219,7 @@ public class Create {
             buffer.append(", ").append(String.valueOf(objectArray[j]));
         }
         System.out.println(buffer);
-
+         calculate_final_MST();
     }
 
     private void buildMatrix() {
@@ -245,9 +249,11 @@ public class Create {
                 if(distances[i][j]>0)
                     graph.addEdge(i,j,distances[i][j]);
           Prim.start(graph);
-
     }
-
+public void calculate_final_MST()
+{
+    
+}
     public void writeFile() throws IOException {
         int i, j;
         File fileName = new File("file.txt");
@@ -262,30 +268,6 @@ public class Create {
 
         writer.close();
 
-    }
-    public void readFile(){
-        String file = "C:\\Users\\Vals_\\OneDrive\\Desktop\\adiacenta.txt";
-        BufferedReader reader;
-        String line;
-
-        int i = 0, j;
-        try{
-            reader = new BufferedReader(new FileReader(file));
-            while((line = reader.readLine()) != null){
-                String[] row = line.split(" ");
-                for(j = 0; j < streets; j++)
-                    distances[i][j] = Integer.parseInt(row[j]);
-                i++;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println("Matricea de adiacenta: ");
-        for(i = 0; i < streets; i++) {
-            for (j = 0; j < streets; j++)
-                System.out.print(distances[i][j] + " ");
-            System.out.println();
-        }
     }
 
     private void createTables() throws SQLException {
