@@ -38,6 +38,23 @@ public class SidePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                try {
+                    CallableStatement callableStatement = conn.connection.prepareCall("begin ? := clientOrder(?, ?); end;");
+                    callableStatement.registerOutParameter(1, OracleTypes.VARCHAR);
+                    callableStatement.setString(2, "test");
+                    String itemsString = String.join( " ",items);
+                    callableStatement.setString(3, itemsString);
+                    callableStatement.execute();
+                    String result = callableStatement.getString(1);
+                    System.out.println(result);
+                    callableStatement.close();
+                    System.out.println("Comanda trimisa");
+
+
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
             }
         });
         mainPanel.setBackground(Color.BLUE);

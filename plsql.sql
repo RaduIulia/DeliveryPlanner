@@ -197,7 +197,7 @@ CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\Vals_\OneDrive\Desktop\Proiecte\p
 CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\iulia\IdeaProjects\V2';
 /
 CREATE Or REPLACE TYPE vector_linie AS  VARRAY(1000) OF INTEGER; 
-
+/
 
 Create or replace FUNCTION ministatistica_strazi
 RETURN varchar2 AS
@@ -212,7 +212,7 @@ type vector_linie IS VARRAY(5) OF INTEGER;
 v_per_numar vector_linie;
 BEGIN v_fisier:=UTL_FILE.FOPEN('MYDIR','file.txt','R');
 v_per_numar := vector_linie(0,0,0,0,0);
-v_total := 1;
+v_total := 0;
 loop
 BEGIN UTL_FILE.GET_LINE(v_fisier,v_sir);
 v_total := v_total+1;
@@ -248,7 +248,6 @@ FOR i in 2 .. 5 LOOP
 UTL_FILE.FCLOSE(v_fisier);
 return v_return;
 END; 
-
 /
 
 Create or replace FUNCTION citire_si_prelucrare_linie( IN_string IN varchar2 )
@@ -275,6 +274,7 @@ End loop;
 return v_numar;
 --DBMS_OUTPUT.PUT_LINE('Text printed: ' || IN_string);
 End;
+/
 
 declare
 x varchar2(500);
@@ -282,7 +282,6 @@ begin
 x := ministatistica_strazi();
 --DBMS_OUTPUT.PUT_LINE(x);
 end;
-
 
 -- -----------------------------------------------------------
 -- -----------------------------------------------------------
@@ -544,3 +543,52 @@ BEGIN
     END IF;
 END;
 /
+
+CREATE OR REPLACE FUNCTION clientOrder(nume in VARCHAR2, lista in VARCHAR2)
+RETURN VARCHAR2 AS
+v_id number(10);
+v_nume varchar2(255);
+v_lista varchar2(4000);
+v_i int;
+v_j int;
+v_warehouses int;
+v_items int;
+v_ok int;
+v_item_name varchar2(255);
+v_exists int;
+v_depozite varchar2(400);
+begin
+    v_depozite := '';
+    SELECT count(*) INTO v_warehouses FROM WAREHOUSES;
+    SELECT count(*) INTO v_items FROM ITEMS;
+    for v_i in 1..v_warehouses loop
+        v_ok := 1;
+        for v_j in 1..v_items loop
+            SELECT nume into v_item_name from items where id = v_j;
+            SELECT COUNT(*) into v_exists FROM orders WHERE lista = '%' || v_item_name || '%';
+            if (v_exists = 0) THEN
+                v_ok := 0;
+            end if;
+        end loop;
+        if(v_ok = 1) THEN
+            v_depozite := '' ||v_i;
+        end if;
+    end loop;
+
+    SELECT count(*) INTO v_id FROM orders;
+    v_nume := nume;
+    v_lista := lista;
+    dbms_output.put_line(v_id);
+    insert into orders values(v_id, v_nume, v_lista);
+    return v_depozite;
+end;
+/
+
+declare
+v_exists int;
+v_item_name varchar2(255);
+begin
+v_item_name := 'Cumin';
+SELECT COUNT(*) into v_exists FROM orders WHERE lista = '%' || v_item_name || '%';
+dbms_output.put_line(v_exists);
+end;
