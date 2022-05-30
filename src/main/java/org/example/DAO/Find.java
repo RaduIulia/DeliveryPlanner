@@ -106,6 +106,7 @@ public class Find {
         while(rs.next()){
             keep = rs.getString(2);
         }
+        pstatement.close();
         return keep;
     }
     public static int findCostById(Connection connection, int id) throws SQLException{
@@ -119,6 +120,7 @@ public class Find {
         while(rs.next()){
             keep = rs.getInt(3);
         }
+        pstatement.close();
         return keep;
     }
 
@@ -133,6 +135,7 @@ public class Find {
         while(rs.next()){
             keep = rs.getString(2);
         }
+        pstatement.close();
         return keep;
     }
     public static int findCostById2(Connection connection, int id) throws SQLException{
@@ -146,6 +149,7 @@ public class Find {
         while(rs.next()){
             keep = rs.getInt(3);
         }
+        pstatement.close();
         return keep;
     }
     public static String findWarehouseNameById(Connection connection, int id) throws SQLException{
@@ -159,6 +163,7 @@ public class Find {
         while(rs.next()){
             keep = rs.getString(2);
         }
+        pstatement.close();
         return keep;
     }
 }

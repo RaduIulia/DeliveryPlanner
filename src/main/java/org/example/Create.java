@@ -157,7 +157,8 @@ public class Create {
         callableStatement.close();
 
         //generam depozitele
-        int wh = 5;
+        int min = 1;
+        int wh = (int)Math.floor(Math.random()*(streets/2-min+1)+min);
         callableStatement = conn.connection.prepareCall("begin ? := generate_warehouse(?); end;");
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
         callableStatement.setInt(2, wh);
