@@ -221,7 +221,7 @@ CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\Vals_\OneDrive\Desktop\Proiecte\p
 CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\iulia\IdeaProjects\V2';
 /
 CREATE Or REPLACE TYPE vector_linie AS  VARRAY(1000) OF INTEGER; 
-
+/
 
 Create or replace FUNCTION ministatistica_strazi
 RETURN varchar2 AS
@@ -275,7 +275,6 @@ FOR i in 2 .. 5 LOOP
 UTL_FILE.FCLOSE(v_fisier);
 return v_return;
 END; 
-
 /
 
 Create or replace FUNCTION citire_si_prelucrare_linie( IN_string IN varchar2 )
@@ -302,6 +301,7 @@ End loop;
 return v_numar;
 --DBMS_OUTPUT.PUT_LINE('Text printed: ' || IN_string);
 End;
+/
 
 declare
 x varchar2(500);
@@ -309,7 +309,6 @@ begin
 x := ministatistica_strazi();
 DBMS_OUTPUT.PUT_LINE(x);
 end;
-
 
 -- -----------------------------------------------------------
 -- -----------------------------------------------------------
@@ -571,3 +570,58 @@ BEGIN
     END IF;
 END;
 /
+
+CREATE OR REPLACE FUNCTION clientOrder(nume in VARCHAR2, lista in nume_array)
+RETURN VARCHAR2 AS
+v_id number(10);
+v_nume varchar2(255);
+v_lista nume_array := nume_array(500);
+v_i int;
+v_j int;
+v_warehouses int;
+v_items int;
+v_ok int;
+v_item_name varchar2(255);
+v_exists int;
+v_depozite varchar2(400);
+v_item_id int;
+v_ids array := array(500);
+v_counter int;
+begin
+    v_depozite := '';
+    v_lista := lista;
+    v_depozite := v_depozite || v_lista(1) || ' ';
+    dbms_output.put_line('Client Order');
+    SELECT COUNT(*) INTO v_warehouses FROM warehouses;
+    
+    for v_counter in 1..lista.count - 1 loop
+        dbms_output.put_line('v_lista(' || v_counter || ') = ' || v_lista(v_counter));
+        SELECT id INTO v_item_id FROM items WHERE nume = v_lista(v_counter);
+        dbms_output.put_line('v_item_id = ' || v_item_id);
+        for v_i in 1..v_warehouses loop
+            dbms_output.put_line('v_i = ' || v_i);
+            SELECT COUNT(*) INTO v_j FROM warehouseItems WHERE warehouseId = v_i and itemId = v_item_id;
+            if (v_j > 0) THEN
+                v_depozite := v_depozite || v_i || ' ';
+            end if;
+        end loop;
+    end loop;
+    
+    return v_depozite;
+end;
+/
+
+declare
+v_exists int;
+v_item_name varchar2(255);
+v_items nume_array := nume_array(10);
+begin
+--v_item_name := 'Cumin';
+--SELECT COUNT(*) into v_exists FROM orders WHERE v_item_name like '%' || lista || '%';
+--dbms_output.put_line(v_exists);
+v_items.extend(2);
+v_items(1) := 'Raspberry';
+v_items(2) := 'Figs';
+v_item_name := clientOrder('test', v_items);
+dbms_output.put_line(v_item_name);
+end;

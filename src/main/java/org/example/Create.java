@@ -29,6 +29,7 @@ public class Create {
     List<Integer> toVisit=new ArrayList<>();
     Graph graf;
 
+
     public Create(int streets) throws SQLException, IOException {
         this.streets = streets;
         conn = DBConnect.createConnection();
@@ -125,8 +126,6 @@ public class Create {
             Street street = new Street(i, Find.findNameById(conn.connection, i), Find.findCostById(conn.connection, i), distances[i-1]);
             streetList.add(street);
         }
-
-
         callableStatement.close();
 
         buildMatrix();
@@ -134,9 +133,7 @@ public class Create {
 
         for(Street s : streetList){
             callableStatement = conn.connection.prepareCall("UPDATE streets SET intersectare = ? WHERE id = ?");
-           // System.out.println("s.getName() = " + s.getName());
             String neighborhood = String.valueOf(s.neighborhood(streetList));
-           // System.out.println("vecini: " + neighborhood);
             callableStatement.setString(1, neighborhood);
             callableStatement.setInt(2, s.getId());
             callableStatement.execute();
@@ -278,6 +275,7 @@ public void calculate_final_MST()
         stmt.execute("DROP TABLE streets");
         stmt.execute("DROP TABLE items");
         stmt.execute("DROP TABLE warehouses");
+        stmt.execute("DROP TABLE orders");
 
         sql = "CREATE TABLE streets (id numeric(5) PRIMARY KEY , nume_strada varchar2(4000), cost numeric, intersectare varchar2(4000))";
         stmt.execute(sql);
@@ -291,6 +289,12 @@ public void calculate_final_MST()
         sql = "CREATE TABLE warehouseItems (itemId numeric(5) NOT NULL , warehouseId numeric(5) NOT NULL, FOREIGN KEY (itemId) references items(id)," +
                 "FOREIGN KEY (warehouseId) references warehouses(id)/*, UNIQUE (itemId, warehouseId)*/)";
         stmt.execute(sql);
+
+        sql = "CREATE TABLE orders (id NUMBER(10) NOT NULL, nume varchar2(255), lista varchar2(4000))";
+        stmt.execute(sql);
+        sql = "ALTER TABLE orders ADD (CONSTRAINT dept_pk PRIMARY KEY (ID))";
+        stmt.execute(sql);
+
     }
 
     public int[][] getDistances() {

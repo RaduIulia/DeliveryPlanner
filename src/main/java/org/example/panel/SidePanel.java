@@ -1,6 +1,8 @@
 package org.example.panel;
 
 import oracle.jdbc.OracleTypes;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
 import oracle.sql.NUMBER;
 import org.example.Create;
 import org.example.DBConnect;
@@ -37,6 +39,25 @@ public class SidePanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                try {
+                    CallableStatement callableStatement = conn.connection.prepareCall("begin ? := clientOrder(?, ?); end;");
+                    callableStatement.registerOutParameter(1, OracleTypes.VARCHAR);
+                    callableStatement.setString(2, "test");
+                    String itemsString = String.join( ", ",items);
+                    ArrayDescriptor desc = ArrayDescriptor.createDescriptor("NUME_ARRAY",conn.connection);
+                    ARRAY array = new ARRAY(desc, conn.connection, items.toArray());
+                    callableStatement.setArray(3, array);
+                    callableStatement.execute();
+                    String result = callableStatement.getString(1);
+                    System.out.println(result);
+                    callableStatement.close();
+                    System.out.println("Comanda trimisa");
+
+
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
 
             }
         });
