@@ -206,12 +206,14 @@ end;
 /
 
 SELECT COUNT(id) FROM streets;
+/
 
 declare
 x nume_array;
 begin
 x := generate_warehouse(5);
 end;
+/
 
 create or replace function generate(x in number)
 return nume_array is
@@ -596,9 +598,11 @@ v_nume varchar2(255);
 BEGIN
     y := 0;
     SELECT COUNT(*) INTO y FROM ITEMS WHERE nume like '%' || x || '%';
-    IF y > 0 THEN
+    IF y = 1 THEN
         SELECT nume into v_nume from items where nume like '%' || x || '%';
         RETURN v_nume;
+    ELSIF y > 1 THEN
+        RETURN '2';
     ELSE 
         RETURN '0';
     END IF;
@@ -638,6 +642,7 @@ begin
                 v_depozite := v_depozite || v_i || ' ';
             end if;
         end loop;
+        v_depozite := v_depozite || '| ';
     end loop;
     
     return v_depozite;
@@ -652,7 +657,7 @@ begin
 --v_item_name := 'Cumin';
 --SELECT COUNT(*) into v_exists FROM orders WHERE v_item_name like '%' || lista || '%';
 --dbms_output.put_line(v_exists);
-v_items.extend(2);
+v_items.extend;
 v_items(1) := 'Raspberry';
 v_items(2) := 'Figs';
 v_item_name := clientOrder('test', v_items);

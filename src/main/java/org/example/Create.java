@@ -27,6 +27,7 @@ public class Create {
     List<Warehouses> warehousesList = new ArrayList<>();
     List<Items> itemsList = new ArrayList<>();
     List<Integer> toVisit=new ArrayList<>();
+    int wh = 0;
     Graph graf;
 
 
@@ -205,7 +206,7 @@ public class Create {
 
         //generam depozitele
         int min = 1;
-        int wh = (int)Math.floor(Math.random()*(streets/2-min+1)+min);
+        wh = (int)Math.floor(Math.random()*(streets/2-min+1)+min);
         callableStatement = conn.connection.prepareCall("begin ? := generate_warehouse(?); end;");
         callableStatement.registerOutParameter(1, OracleTypes.ARRAY, "NUME_ARRAY");
         callableStatement.setInt(2, wh);
@@ -346,8 +347,8 @@ public void calculate_final_MST()
 
     }
 
-    public static void calculare_depozite(String text)
-    {
+    public static void calculare_depozite(String text, int depozite) {
+        HashMap<Character, Integer> deposCounter = new HashMap<>();
         char delimitator = '|';
         int count = 0;
         int[] numere_array;
@@ -358,28 +359,43 @@ public void calculate_final_MST()
         }
         System.out.println("Comanda contine "+count+" iteme.");
         System.out.println(text);
-        String text_numere=String.valueOf(text);;
+        String text_numere = String.valueOf(text);;
         System.out.println(text_numere);
-        text_numere=text_numere.replaceAll("|","");
+        text_numere = text_numere.replaceAll("\\| ","");
         System.out.println(text_numere);
-        //numere_array=method(text_numere);
-        //System.out.println("");
-       // for(int i=0;i< numere_array.length;i++)
-         //   System.out.print(numere_array[i]+" ");
+
+        deposCounter = characterCount(text_numere);
+        for (Map.Entry entry : deposCounter.entrySet()) {
+            System.out.println("wh: " + entry.getKey() + " count: " + entry.getValue());
+            if ((int) entry.getValue() == depozite)
+                System.out.println("Avem toate produsele in depozitul: " + entry.getKey());
+        }
+
+//        numere_array = method(text_numere);
+//        System.out.println("");
+//        for (int j : numere_array) System.out.print(j + " ");
+//
+//        System.out.println();
+    }
+    static HashMap<Character, Integer> characterCount(String inputString) {
+        HashMap<Character, Integer> charCountMap = new HashMap<>();
+        char[] strArray = inputString.toCharArray();
+        for (char c : strArray) {
+            if (charCountMap.containsKey(c) && c != ' ') {
+                charCountMap.put(c, charCountMap.get(c) + 1);
+            }
+            else {
+                charCountMap.put(c, 1);
+            }
+        }
+
+        return charCountMap;
     }
 
-    public static String charRemoveAt(String str, int p) {
-        return str.substring(0, p) + str.substring(p + 1);
-    }
-    static int[] method(String str)
-    {
-
+    static int[] method(String str) {
         String[] splitArray = str.split(" ");
         int[] array = new int[splitArray.length];
 
-        // parsing the String argument as a signed decimal
-        // integer object and storing that integer into the
-        // array
         for (int i = 0; i < splitArray.length; i++) {
             array[i] = Integer.parseInt(splitArray[i]);
         }

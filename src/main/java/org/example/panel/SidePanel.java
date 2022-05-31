@@ -29,7 +29,6 @@ public class SidePanel extends JPanel {
         conn = DBConnect.createConnection();
 
         List<String> items = new ArrayList<>();
-        int[] depozite;
 
         this.mainFrame = mainFrame;
 
@@ -47,14 +46,14 @@ public class SidePanel extends JPanel {
                     CallableStatement callableStatement = conn.connection.prepareCall("begin ? := clientOrder(?, ?); end;");
                     callableStatement.registerOutParameter(1, OracleTypes.VARCHAR);
                     callableStatement.setString(2, "test");
-                    String itemsString = String.join( ", ",items);
                     ArrayDescriptor desc = ArrayDescriptor.createDescriptor("NUME_ARRAY",conn.connection);
                     ARRAY array = new ARRAY(desc, conn.connection, items.toArray());
                     callableStatement.setArray(3, array);
                     callableStatement.execute();
                     String result = callableStatement.getString(1);
                     System.out.println(result);
-                    calculare_depozite(result);
+
+                    calculare_depozite(result, items.size());
                     callableStatement.close();
                     System.out.println("Comanda trimisa");
 
@@ -151,4 +150,5 @@ public class SidePanel extends JPanel {
             throw new RuntimeException(ex);
         }
     }
+
 }
