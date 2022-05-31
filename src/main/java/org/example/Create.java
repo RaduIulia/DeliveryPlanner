@@ -48,6 +48,55 @@ public class Create {
             System.out.println(i.getName() + " " + i.getCost() + " | " + i.neighborhood(streetList));
             Add.createStreet(conn.connection, i, streetList);
         }
+        int se=0;
+        String random_lucru="";
+        String random_lucru2="";
+        String random_lucru3="";
+        String random_lucru4="";
+        String random_lucru5="";
+        List<String> adaugate=new ArrayList<>();
+        while(se<500)
+        {
+            random_lucru=faker.food().ingredient().toString();
+            random_lucru2=faker.food().fruit().toString();
+            random_lucru3=faker.food().vegetable().toString();
+            random_lucru4=faker.food().sushi().toString();
+            random_lucru5=faker.food().spice().toString();
+            //System.out.println(random_lucru);
+            if(adaugate.contains(random_lucru)!=true)
+            {
+                adaugate.add(random_lucru);
+                se++;
+                //System.out.print("aaaa");
+            }
+            if(adaugate.contains(random_lucru2)!=true)
+            {
+                adaugate.add(random_lucru2);
+                se++;
+               // System.out.print("aaaa");
+            }
+            if(adaugate.contains(random_lucru3)!=true)
+            {
+                adaugate.add(random_lucru3);
+                se++;
+               // System.out.print("aaaa");
+            }
+            if(adaugate.contains(random_lucru4)!=true)
+            {
+                adaugate.add(random_lucru4);
+                se++;
+                //System.out.print("aaaa");
+            }
+            if(adaugate.contains(random_lucru5)!=true)
+            {
+                adaugate.add(random_lucru5);
+                se++;
+                //System.out.print("aaaa");
+            }
+        }
+        //for(int i=0;i<500;i++)
+            //System.out.print("'"+adaugate.get(i)+"', ");
+        //System.out.println("");
         //for(int i = 0; i < 100; i++){
         //    Item item = new Item(i, faker.beer().name(), random.nextInt(5));
         //   itemList.add(item);
