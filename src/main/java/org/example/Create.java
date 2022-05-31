@@ -26,7 +26,7 @@ public class Create {
     List<Intersection> intersections = new LinkedList<>();
     List<Warehouses> warehousesList = new ArrayList<>();
     List<Items> itemsList = new ArrayList<>();
-    List<Street> warehouseStreet = new LinkedList<>();
+
 
     public Create(int streets) throws SQLException, IOException {
         this.streets = streets;
