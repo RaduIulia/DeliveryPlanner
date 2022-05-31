@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.example.Create.calculare_depozite;
+
 public class SidePanel extends JPanel {
     final MainFrame mainFrame;
     private DBConnect conn;
@@ -27,6 +29,7 @@ public class SidePanel extends JPanel {
         conn = DBConnect.createConnection();
 
         List<String> items = new ArrayList<>();
+        int[] depozite;
 
         this.mainFrame = mainFrame;
 
@@ -51,9 +54,9 @@ public class SidePanel extends JPanel {
                     callableStatement.execute();
                     String result = callableStatement.getString(1);
                     System.out.println(result);
+                    calculare_depozite(result);
                     callableStatement.close();
                     System.out.println("Comanda trimisa");
-
 
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);

@@ -346,6 +346,46 @@ public void calculate_final_MST()
 
     }
 
+    public static void calculare_depozite(String text)
+    {
+        char delimitator = '|';
+        int count = 0;
+        int[] numere_array;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == delimitator) {
+                count++;
+            }
+        }
+        System.out.println("Comanda contine "+count+" iteme.");
+        System.out.println(text);
+        String text_numere=String.valueOf(text);;
+        System.out.println(text_numere);
+        text_numere=text_numere.replaceAll("|","");
+        System.out.println(text_numere);
+        //numere_array=method(text_numere);
+        //System.out.println("");
+       // for(int i=0;i< numere_array.length;i++)
+         //   System.out.print(numere_array[i]+" ");
+    }
+
+    public static String charRemoveAt(String str, int p) {
+        return str.substring(0, p) + str.substring(p + 1);
+    }
+    static int[] method(String str)
+    {
+
+        String[] splitArray = str.split(" ");
+        int[] array = new int[splitArray.length];
+
+        // parsing the String argument as a signed decimal
+        // integer object and storing that integer into the
+        // array
+        for (int i = 0; i < splitArray.length; i++) {
+            array[i] = Integer.parseInt(splitArray[i]);
+        }
+        return array;
+    }
+
     public int[][] getDistances() {
         return distances;
     }
