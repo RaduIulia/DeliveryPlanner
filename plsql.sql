@@ -8,26 +8,8 @@ select * from warehouses;
 
 select * from warehouseItems;
 
-create or replace procedure test(x in number, y out number) as
-begin
-y := x * x;
-end;
-/
+select * from unavailableItems;
 
-create or replace function testtt(x in number)
-return number is y number;
-begin
-y := x * x;
-return y;
-end;
-/
-
-declare
-x array;
-begin
-x := findItems(3);
-end;
-/
 
 create or replace function findItems(x in number)
 return array is 
@@ -96,7 +78,6 @@ end;
 
 create or replace type nume_array as varray(5000) of varchar2(500);
 /
-
 
 create or replace function generate_items(x in number)
 return nume_array is
@@ -205,9 +186,6 @@ END LOOP;
 end;
 /
 
-SELECT COUNT(id) FROM streets;
-/
-
 declare
 x nume_array;
 begin
@@ -257,6 +235,32 @@ CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\Vals_\OneDrive\Desktop\Proiecte\p
 CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\iulia\IdeaProjects\V2';
 /
 CREATE Or REPLACE TYPE vector_linie AS  VARRAY(1000) OF INTEGER; 
+/
+
+Create or replace FUNCTION citire_si_prelucrare_linie( IN_string IN varchar2 )
+RETURN INT AS
+v_length number(10);
+v_out varchar2(20);
+v_int number(10);
+v_numar number(10);
+Begin
+v_numar := 0;
+v_length := length(IN_string);
+for i in 1..v_length
+Loop
+v_out  := substr(IN_string,i,1) ;
+if(v_out != '0' and v_out != ' ')
+then
+   --DBMS_OUTPUT.PUT_LINE('True');
+   v_numar := v_numar+1;
+   --DBMS_OUTPUT.PUT_LINE('False');
+end IF;
+--DBMS_OUTPUT.PUT_LINE(v_out);
+End loop;
+--DBMS_OUTPUT.PUT_LINE(v_numar);
+return v_numar;
+--DBMS_OUTPUT.PUT_LINE('Text printed: ' || IN_string);
+End;
 /
 
 Create or replace FUNCTION ministatistica_strazi
@@ -311,32 +315,6 @@ FOR i in 2 .. 5 LOOP
 UTL_FILE.FCLOSE(v_fisier);
 return v_return;
 END; 
-/
-
-Create or replace FUNCTION citire_si_prelucrare_linie( IN_string IN varchar2 )
-RETURN INT AS
-v_length number(10);
-v_out varchar2(20);
-v_int number(10);
-v_numar number(10);
-Begin
-v_numar := 0;
-v_length := length(IN_string);
-for i in 1..v_length
-Loop
-v_out  := substr(IN_string,i,1) ;
-if(v_out != '0' and v_out != ' ')
-then
-   --DBMS_OUTPUT.PUT_LINE('True');
-   v_numar := v_numar+1;
-   --DBMS_OUTPUT.PUT_LINE('False');
-end IF;
---DBMS_OUTPUT.PUT_LINE(v_out);
-End loop;
---DBMS_OUTPUT.PUT_LINE(v_numar);
-return v_numar;
---DBMS_OUTPUT.PUT_LINE('Text printed: ' || IN_string);
-End;
 /
 
 declare
@@ -662,4 +640,21 @@ v_items(1) := 'Raspberry';
 v_items(2) := 'Figs';
 v_item_name := clientOrder('test', v_items);
 dbms_output.put_line(v_item_name);
+end;
+
+create or replace type nume_array as varray(5000) of varchar2(500);
+/
+
+CREATE OR REPLACE FUNCTION adauga_item_negasit(v_nume in VARCHAR2)
+return nume_array is
+generate_array nume_array := nume_array(5000);
+v_i numeric(5);
+begin
+       SELECT COUNT(*) INTO v_i FROM unavailableItems ;
+        generate_array.extend;
+        generate_array(v_i) := v_nume;
+        DBMS_OUTPUT.PUT_LINE(v_i || ' ' || v_nume);
+        insert into unavailableItems values (v_i, TRIM(v_nume));
+        commit;
+    return generate_array;
 end;
