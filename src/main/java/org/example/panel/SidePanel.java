@@ -104,13 +104,18 @@ public class SidePanel extends JPanel {
         try {
             callableStatement = conn.connection.prepareCall("begin ? := checkStockItems(?); end;");
             callableStatement.registerOutParameter(1, OracleTypes.VARCHAR);
-            callableStatement.setString(2, jTextField.getText());
+            String nume_item=jTextField.getText();
+            callableStatement.setString(2, nume_item);
             callableStatement.execute();
             String result = callableStatement.getString(1);
             callableStatement.close();
             System.out.println(result);
             if (Objects.equals(result, "0")){
                 System.out.println("Produsul nu exista pe stoc.");
+                callableStatement = conn.connection.prepareCall("begin adauga_item_negasit(?); end;");
+                callableStatement.setString(1, nume_item);
+                callableStatement.execute();
+                callableStatement.close();
 
             }else if (Objects.equals(result, "2")){
                 System.out.println("Avem mai multe produse cu acest nume. Introduceti numele complet.");
