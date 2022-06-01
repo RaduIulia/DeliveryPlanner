@@ -70,8 +70,6 @@ x array;
 begin
 x := findItems(12);
 DBMS_OUTPUT.PUT_LINE(x);
-
-
 end;
 /
 -- --------------------------------------------------------------------------
@@ -645,16 +643,19 @@ end;
 create or replace type nume_array as varray(5000) of varchar2(500);
 /
 
-CREATE OR REPLACE FUNCTION adauga_item_negasit(v_nume in VARCHAR2)
-return nume_array is
-generate_array nume_array := nume_array(5000);
-v_i numeric(5);
+CREATE OR REPLACE procedure adauga_item_negasit(v_nume in VARCHAR2) is
+v_i int;
 begin
-       SELECT COUNT(*) INTO v_i FROM unavailableItems ;
-        generate_array.extend;
-        generate_array(v_i) := v_nume;
-        DBMS_OUTPUT.PUT_LINE(v_i || ' ' || v_nume);
+       SELECT COUNT(id) INTO v_i FROM unavailableItems;
+        --DBMS_OUTPUT.PUT_LINE(v_i || ' ' || v_nume);
+        v_i := v_i +1;
         insert into unavailableItems values (v_i, TRIM(v_nume));
         commit;
-    return generate_array;
 end;
+
+declare 
+begin
+adauga_item_negasit('Apa');
+--DBMS_OUTPUT.PUT_LINE(x);
+end;
+/
