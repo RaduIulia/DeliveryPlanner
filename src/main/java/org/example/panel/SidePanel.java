@@ -55,6 +55,7 @@ public class SidePanel extends JPanel {
 
                     calculare_depozite(result, items.size());
                     callableStatement.close();
+                    items.clear();
                     System.out.println("Comanda trimisa");
 
                 } catch (SQLException ex) {
