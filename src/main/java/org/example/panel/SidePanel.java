@@ -52,10 +52,9 @@ public class SidePanel extends JPanel {
                     callableStatement.execute();
                     String result = callableStatement.getString(1);
                     System.out.println(result);
-
                     calculare_depozite(result, items.size());
                     callableStatement.close();
-                    items.clear();
+                    items.removeAll(items);
                     System.out.println("Comanda trimisa");
 
                 } catch (SQLException ex) {

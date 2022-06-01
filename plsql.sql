@@ -551,7 +551,6 @@ BEGIN
                 return return_array;
             END IF;
     
-    
 END;
 /
 
@@ -573,9 +572,9 @@ y INTEGER;
 v_nume varchar2(255);
 BEGIN
     y := 0;
-    SELECT COUNT(*) INTO y FROM ITEMS WHERE nume like '%' || x || '%';
+    SELECT COUNT(*) INTO y FROM ITEMS WHERE nume like x || '%' or LOWER(nume) like x || '%';
     IF y = 1 THEN
-        SELECT nume into v_nume from items where nume like '%' || x || '%';
+        SELECT nume into v_nume from items where nume like x || '%' or LOWER(nume) like x || '%';
         RETURN v_nume;
     ELSIF y > 1 THEN
         RETURN '2';
