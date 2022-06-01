@@ -322,15 +322,19 @@ public void calculate_final_MST()
         String sql;
 
         stmt.execute("DROP TABLE warehouseItems");
-        stmt.execute("DROP TABLE streets");
-        stmt.execute("DROP TABLE items");
+       stmt.execute("DROP TABLE streets");
+       stmt.execute("DROP TABLE items");
         stmt.execute("DROP TABLE warehouses");
         stmt.execute("DROP TABLE orders");
+        stmt.execute("DROP TABLE unavailableItems");
 
         sql = "CREATE TABLE streets (id numeric(5) PRIMARY KEY , nume_strada varchar2(4000), cost numeric, intersectare varchar2(4000))";
         stmt.execute(sql);
 
         sql = "CREATE TABLE items (id numeric(5) PRIMARY KEY , nume varchar2(255), pret numeric)";
+        stmt.execute(sql);
+
+        sql = "CREATE TABLE unavailableItems (id numeric(5) PRIMARY KEY , nume varchar2(255))";
         stmt.execute(sql);
 
         sql = "CREATE TABLE warehouses (id numeric(5) PRIMARY KEY , nume varchar2(255), id_strada numeric(5))";
@@ -371,11 +375,10 @@ public void calculate_final_MST()
                 System.out.println("Avem toate produsele in depozitul: " + entry.getKey());
         }
 
-//        numere_array = method(text_numere);
-//        System.out.println("");
-//        for (int j : numere_array) System.out.print(j + " ");
-//
-//        System.out.println();
+     //   numere_array = method(text_numere);
+     // System.out.println("");
+     //  for (int j : numere_array) System.out.print(j + " ");
+      // System.out.println();
     }
     static HashMap<Character, Integer> characterCount(String inputString) {
         HashMap<Character, Integer> charCountMap = new HashMap<>();

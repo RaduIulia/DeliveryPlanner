@@ -111,6 +111,7 @@ public class SidePanel extends JPanel {
             System.out.println(result);
             if (Objects.equals(result, "0")){
                 System.out.println("Produsul nu exista pe stoc.");
+
             }else if (Objects.equals(result, "2")){
                 System.out.println("Avem mai multe produse cu acest nume. Introduceti numele complet.");
             }
