@@ -590,6 +590,7 @@ RETURN VARCHAR2 AS
 v_id number(10);
 v_nume varchar2(255);
 v_lista nume_array := nume_array(500);
+v_lista_produse varchar2(4000);
 v_i int;
 v_j int;
 v_warehouses int;
@@ -620,7 +621,12 @@ begin
         end loop;
         v_depozite := v_depozite || '| ';
     end loop;
-    
+    for v_counter in 1..lista.count - 1 loop
+    v_lista_produse := v_lista_produse || v_lista(v_counter) || ', ';
+    end loop;
+    v_lista_produse := v_lista_produse || v_lista(lista.count);
+    SELECT COUNT(*) INTO v_id FROM orders;
+    insert into orders values(v_id, 'Order ' || v_id, v_lista_produse);
     return v_depozite;
 end;
 /
@@ -639,7 +645,7 @@ v_items(2) := 'Figs';
 v_item_name := clientOrder('test', v_items);
 dbms_output.put_line(v_item_name);
 end;
-
+/
 create or replace type nume_array as varray(5000) of varchar2(500);
 /
 
@@ -652,7 +658,7 @@ begin
         insert into unavailableItems values (v_i, TRIM(v_nume));
         commit;
 end;
-
+/
 declare 
 begin
 adauga_item_negasit('Apa');
