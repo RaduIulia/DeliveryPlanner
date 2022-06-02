@@ -230,7 +230,6 @@ end;
 CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\Vals_\OneDrive\Desktop\Proiecte\plsql\V2';
 /
 
-CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\iulia\IdeaProjects\V2';
 /
 CREATE Or REPLACE TYPE vector_linie AS  VARRAY(1000) OF INTEGER; 
 /
@@ -348,8 +347,137 @@ BEGIN
     
 END;
 /
-CREATE OR REPLACE TYPE string_array as varray(1000) of varchar2(500);
+
+CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\iulia\IdeaProjects\V2';
+
+DECLARE
+  TYPE rand IS RECORD
+  (
+    val1   NUMBER,
+    val2   NUMBER,
+    val3   NUMBER
+  );
+  TYPE randtabel IS TABLE OF rand;
+  TYPE rand_randtabel IS TABLE OF randtabel;
+  matrice   rand_randtabel := rand_randtabel();
+  v_length number(5);
+  v_fisier UTL_FILE.FILE_TYPE;
+v_sir VARCHAR2(250);
+BEGIN
+v_fisier:=UTL_FILE.FOPEN('MYDIR','file.txt','R');
+loop
+  BEGIN UTL_FILE.GET_LINE(v_fisier,v_sir);
+  v_length := length(v_sir)/2;
+  EXCEPTION 
+WHEN NO_DATA_FOUND 
+THEN EXIT ;
+END; 
+end loop;
+ dbms_output.put_line(v_length);   
+  matrice.EXTEND(v_length);
+  FOR i IN 1 .. matrice.COUNT LOOP
+    matrice(i) := randtabel();
+    matrice(i).EXTEND(v_length);
+    FOR j IN 1 .. matrice(i).COUNT LOOP
+      matrice(i)(j).val1 := i;
+      matrice(i)(j).val2 := j;
+      if(i!=j)
+      then
+      matrice(i)(j).val3 := DBMS_RANDOM.VALUE(1,10);
+      else
+       matrice(i)(j).val3 :=0;
+       end if;
+    END LOOP;
+  END LOOP;
+   FOR i IN 1 .. matrice.COUNT LOOP
+    FOR j IN 1 .. matrice(i).COUNT LOOP
+      DBMS_OUTPUT.PUT( ' index i: ' || matrice(i)(j).val1
+                    || ' indej j:' || matrice(i)(j).val2
+                    || ' valoare matrice[i][j]: ' || matrice(i)(j).val3 ||' ' );
+    END LOOP;
+    DBMS_OUTPUT.NEW_LINE;
+  END LOOP;
+
+    DBMS_OUTPUT.NEW_LINE;
+     DBMS_OUTPUT.NEW_LINE;
+      DBMS_OUTPUT.NEW_LINE;
+FOR k IN 1 .. matrice.COUNT LOOP
+    FOR i IN 1 .. matrice(k).COUNT LOOP
+       FOR j IN 1 .. matrice(k).COUNT LOOP
+        if(matrice(i)(j).val3>(matrice(i)(k).val3+matrice(k)(j).val3))
+     then 
+         matrice(i)(j).val3:=(matrice(i)(k).val3+matrice(k)(j).val3);
+         end if;
+    END LOOP;
+      END LOOP;
+      end loop;
+  FOR i IN 1 .. matrice.COUNT LOOP
+    FOR j IN 1 .. matrice(i).COUNT LOOP
+      DBMS_OUTPUT.PUT( ' index i: ' || matrice(i)(j).val1
+                    || ' indej j:' || matrice(i)(j).val2
+                    || ' valoare matrice[i][j]: ' || matrice(i)(j).val3 ||' ' );
+    END LOOP;
+    DBMS_OUTPUT.NEW_LINE;
+  END LOOP;
+END;
 /
+
+Create or replace FUNCTION calculare_distanta_minima
+RETURN varchar2 AS
+v_fisier UTL_FILE.FILE_TYPE;
+v_sir VARCHAR2(250);
+v_maxim number(10);
+v_index_maxim number(10);
+v_per_linie number(10);
+v_ramase number(10);
+v_strazi number(10);
+v_return varchar2(500);
+type vector_linie IS VARRAY(5) OF INTEGER; 
+v_per_numar vector_linie;
+BEGIN v_fisier:=UTL_FILE.FOPEN('MYDIR','file.txt','R');
+loop
+BEGIN UTL_FILE.GET_LINE(v_fisier,v_sir);
+--DBMS_OUTPUT.PUT_LINE(v_sir);
+v_per_linie := citire_si_prelucrare_linie(v_sir);
+--DBMS_OUTPUT.PUT_LINE(v_per_linie);
+v_per_numar(v_per_linie) := v_per_numar(v_per_linie)+1;
+v_strazi := v_strazi +1;
+EXCEPTION 
+WHEN NO_DATA_FOUND 
+THEN EXIT ;
+END; 
+end loop;
+end;
+
+
+
+Create or replace FUNCTION citire_si_prelucrare_linie( IN_string IN varchar2 )
+RETURN INT AS
+v_length number(10);
+v_out varchar2(20);
+v_int number(10);
+v_numar number(10);
+Begin
+v_numar := 0;
+v_length := length(IN_string);
+for i in 1..v_length
+Loop
+v_out  := substr(IN_string,i,1) ;
+if(v_out != '0' and v_out != ' ')
+then
+   --DBMS_OUTPUT.PUT_LINE('True');
+   v_numar := v_numar+1;
+   --DBMS_OUTPUT.PUT_LINE('False');
+end IF;
+--DBMS_OUTPUT.PUT_LINE(v_out);
+End loop;
+--DBMS_OUTPUT.PUT_LINE(v_numar);
+return v_numar;
+--DBMS_OUTPUT.PUT_LINE('Text printed: ' || IN_string);
+End;
+/
+
+
 
 select * from streets where nume_strada like 'Janice Wells';
 /
@@ -647,6 +775,8 @@ end;
 /
 create or replace type nume_array as varray(5000) of varchar2(500);
 /
+
+create or replace functie() return 
 
 CREATE OR REPLACE procedure adauga_item_negasit(v_nume in VARCHAR2) is
 v_i int;
