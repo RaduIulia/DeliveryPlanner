@@ -27,6 +27,7 @@ public class Create {
     List<Warehouses> warehousesList = new ArrayList<>();
     List<Items> itemsList = new ArrayList<>();
     List<Integer> toVisit=new ArrayList<>();
+    ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
     int wh = 0;
     Graph graf;
 
@@ -224,6 +225,13 @@ public class Create {
         }
 //        System.out.println(buffer);
          calculate_final_MST();
+        int client = random.nextInt(1, 9);
+        for(Warehouses w : warehousesList){
+            int depozit = w.getId_strada();
+            System.out.println("depozitul este pe strada: " + w.getId_strada());
+            printShortestDistance(adj, depozit, client, streets);
+            System.out.println();
+        }
     }
 
     private void buildMatrix() {
@@ -251,8 +259,7 @@ public class Create {
         int v = streets;
 
         // Adjacency list for storing which vertices are connected
-        ArrayList<ArrayList<Integer>> adj =
-                new ArrayList<ArrayList<Integer>>(v);
+        adj = new ArrayList<ArrayList<Integer>>(v);
         for (i = 0; i < v; i++) {
             adj.add(new ArrayList<Integer>());
         }
@@ -264,10 +271,7 @@ public class Create {
                     addEdge(adj, j, i);
                 }
         Prim.start(graph);
-        int source = 0;
-        int dest = 7;
-        printShortestDistance(adj, source, dest, v);
-        System.out.println();
+
     }
 public void calculate_final_MST()
 {
@@ -398,7 +402,7 @@ public void calculate_final_MST()
         int pred[] = new int[v];
         int dist[] = new int[v];
 
-        if (BFS(adj, s, dest, v, pred, dist) == false) {
+        if (!BFS(adj, s, dest, v, pred, dist)) {
             System.out.println("Given source and destination" +
                     "are not connected");
             return;
