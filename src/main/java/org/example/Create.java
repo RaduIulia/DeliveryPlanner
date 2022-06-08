@@ -49,52 +49,7 @@ public class Create {
             System.out.println(i.getName() + " " + i.getCost() + " | " + i.neighborhood(streetList));
             Add.createStreet(conn.connection, i, streetList);
         }
-        int se=0;
-        String random_lucru="";
-        String random_lucru2="";
-        String random_lucru3="";
-        String random_lucru4="";
-        String random_lucru5="";
-        List<String> adaugate=new ArrayList<>();
-        while(se<500)
-        {
-            random_lucru=faker.food().ingredient().toString();
-            random_lucru2=faker.food().fruit().toString();
-            random_lucru3=faker.food().vegetable().toString();
-            random_lucru4=faker.food().sushi().toString();
-            random_lucru5=faker.food().spice().toString();
-            //System.out.println(random_lucru);
-            if(adaugate.contains(random_lucru)!=true)
-            {
-                adaugate.add(random_lucru);
-                se++;
-                //System.out.print("aaaa");
-            }
-            if(adaugate.contains(random_lucru2)!=true)
-            {
-                adaugate.add(random_lucru2);
-                se++;
-               // System.out.print("aaaa");
-            }
-            if(adaugate.contains(random_lucru3)!=true)
-            {
-                adaugate.add(random_lucru3);
-                se++;
-               // System.out.print("aaaa");
-            }
-            if(adaugate.contains(random_lucru4)!=true)
-            {
-                adaugate.add(random_lucru4);
-                se++;
-                //System.out.print("aaaa");
-            }
-            if(adaugate.contains(random_lucru5)!=true)
-            {
-                adaugate.add(random_lucru5);
-                se++;
-                //System.out.print("aaaa");
-            }
-        }
+
         //for(int i=0;i<500;i++)
             //System.out.print("'"+adaugate.get(i)+"', ");
         //System.out.println("");
@@ -110,10 +65,7 @@ public class Create {
 //            Add.createWarehouse(conn.connection, warehouses);
 //        }
 
-//        for(Warehouses w : warehousesList)
-//            for(Items i : itemsList)
-//                if(random.nextInt(10) < 7)
-//                    Add.createInventory(conn.connection, w.getId(), i.getId());
+
 
         // generam produsele
         CallableStatement callableStatement = conn.connection.prepareCall("begin ? := generate_items(?); end;");
@@ -187,8 +139,9 @@ public class Create {
             callableStatement.setString(1, neighborhood);
             callableStatement.setInt(2, s.getId());
             callableStatement.execute();
+            callableStatement.close();
         }
-        callableStatement.close();
+
 
         for(Street i : streetList){
             System.out.println(i.getName() + " " + i.getCost() + " | " + i.neighborhood(streetList));
@@ -241,12 +194,16 @@ public class Create {
         callableStatement.close();
 
         // cream inventarul
-        callableStatement = conn.connection.prepareCall("{call createInventory(?, ?)}");
-        System.out.println(itemsList.size() + " " + warehousesList.size());
-        callableStatement.setInt(1, itemsList.size());
-        callableStatement.setInt(2, warehousesList.size());
-        callableStatement.execute();
-        callableStatement.close();
+//        callableStatement = conn.connection.prepareCall("{call createInventory(?, ?)}");
+//        System.out.println(itemsList.size() + " " + warehousesList.size());
+//        callableStatement.setInt(1, itemsList.size());
+//        callableStatement.setInt(2, warehousesList.size());
+//        callableStatement.execute();
+//        callableStatement.close();
+        for(Warehouses w : warehousesList)
+            for(Items i : itemsList)
+                if(random.nextInt(10) < 7)
+                    Add.createInventory(conn.connection, w.getId(), i.getId());
 
         // cautam un produs sa vedem daca il avem pe stoc
         callableStatement = conn.connection.prepareCall("begin ? := findItems(?); end;");

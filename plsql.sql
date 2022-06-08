@@ -230,7 +230,6 @@ end;
 CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\Vals_\OneDrive\Desktop\Proiecte\plsql\V2';
 /
 
-/
 CREATE Or REPLACE TYPE vector_linie AS  VARRAY(1000) OF INTEGER; 
 /
 
@@ -263,7 +262,7 @@ End;
 Create or replace FUNCTION ministatistica_strazi
 RETURN varchar2 AS
 v_fisier UTL_FILE.FILE_TYPE;
-v_sir VARCHAR2(250);
+v_sir VARCHAR2(2500);
 v_maxim number(10);
 v_index_maxim number(10);
 v_per_linie number(10);
@@ -349,6 +348,7 @@ END;
 /
 
 CREATE OR REPLACE DIRECTORY MYDIR as 'C:\Users\iulia\IdeaProjects\V2';
+/
 
 DECLARE
   TYPE rand IS RECORD
@@ -448,7 +448,7 @@ THEN EXIT ;
 END; 
 end loop;
 end;
-
+/
 
 
 Create or replace FUNCTION citire_si_prelucrare_linie( IN_string IN varchar2 )
@@ -758,25 +758,24 @@ begin
 end;
 /
 
-declare
-v_exists int;
-v_item_name varchar2(255);
-v_items nume_array := nume_array(10);
-begin
---v_item_name := 'Cumin';
---SELECT COUNT(*) into v_exists FROM orders WHERE v_item_name like '%' || lista || '%';
---dbms_output.put_line(v_exists);
-v_items.extend;
-v_items(1) := 'Raspberry';
-v_items(2) := 'Figs';
-v_item_name := clientOrder('test', v_items);
-dbms_output.put_line(v_item_name);
-end;
-/
+--declare
+--v_exists int;
+--v_item_name varchar2(255);
+--v_items nume_array := nume_array(10);
+--begin
+----v_item_name := 'Cumin';
+----SELECT COUNT(*) into v_exists FROM orders WHERE v_item_name like '%' || lista || '%';
+----dbms_output.put_line(v_exists);
+--v_items.extend;
+--v_items(1) := 'Raspberry';
+--v_items(2) := 'Figs';
+--v_item_name := clientOrder('test', v_items);
+--dbms_output.put_line(v_item_name);
+--end;
+--/
 create or replace type nume_array as varray(5000) of varchar2(500);
 /
 
-create or replace functie() return 
 
 CREATE OR REPLACE procedure adauga_item_negasit(v_nume in VARCHAR2) is
 v_i int;
