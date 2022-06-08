@@ -258,7 +258,6 @@ public class Create {
         Graph graph = new Graph(streets, false, true);
         int v = streets;
 
-        // Adjacency list for storing which vertices are connected
         adj = new ArrayList<ArrayList<Integer>>(v);
         for (i = 0; i < v; i++) {
             adj.add(new ArrayList<Integer>());

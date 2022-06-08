@@ -1,34 +1,34 @@
 package org.example.Algorithm;
 
 public class Graph {
-    private int numOfNodes;
+    private int nodes;
     private boolean directed;
     private boolean weighted;
     private double[][] matrix;
 
     private double[] edges;
     private double[] parents;
-    private boolean[] includedInMST;
+    private boolean[] inMST;
 
     private boolean[][] isSetMatrix;
 
-    public Graph(int numOfNodes, boolean directed, boolean weighted) {
+    public Graph(int nodes, boolean directed, boolean weighted) {
         this.directed = directed;
         this.weighted = weighted;
-        this.numOfNodes = numOfNodes;
+        this.nodes = nodes;
 
         // Simply initializes our adjacency matrix to the appropriate size
-        matrix = new double[numOfNodes][numOfNodes];
-        isSetMatrix = new boolean[numOfNodes][numOfNodes];
+        matrix = new double[nodes][nodes];
+        isSetMatrix = new boolean[nodes][nodes];
 
-        edges = new double[numOfNodes];
-        parents = new double[numOfNodes];
-        includedInMST = new boolean[numOfNodes];
+        edges = new double[nodes];
+        parents = new double[nodes];
+        inMST = new boolean[nodes];
 
-        for(int i = 0; i < numOfNodes; i++){
+        for(int i = 0; i < nodes; i++){
             edges[i] = Double.POSITIVE_INFINITY;
             parents[i] = -1;
-            includedInMST[i] = false;
+            inMST[i] = false;
         }
     }
     public void addEdge(int source, int destination, float weight) {
@@ -50,11 +50,11 @@ public class Graph {
 
     public void deleteNode(int Node)
     {
-      for(int i=0;i<numOfNodes;i++)
+      for(int i=0;i<nodes;i++)
           matrix[Node][i]=0;
-      for(int i=0;i<numOfNodes;i++)
+      for(int i=0;i<nodes;i++)
           matrix[i][Node]=0;
-      numOfNodes--;
+      nodes--;
     }
 
     public void deleteEdge(int source, int destination)
@@ -67,8 +67,8 @@ public class Graph {
             isSetMatrix[destination][source] = false;
         }
     }
-    public int getNumOfNodes() {
-        return numOfNodes;
+    public int getNodes() {
+        return nodes;
     }
 
     public double getEdges(int i) {
@@ -79,12 +79,12 @@ public class Graph {
         this.edges[node] = edge;
     }
 
-    public boolean getIncludedInMST(int i) {
-        return includedInMST[i];
+    public boolean getInMST(int i) {
+        return inMST[i];
     }
 
-    public void setIncludedInMST(int node) {
-        this.includedInMST[node] = true;
+    public void setInMST(int node) {
+        this.inMST[node] = true;
     }
 
     public double[][] getMatrix() {
