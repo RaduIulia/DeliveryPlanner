@@ -222,7 +222,7 @@ public class Create {
         {
             buffer.append(", ").append(String.valueOf(objectArray[j]));
         }
-        System.out.println(buffer);
+//        System.out.println(buffer);
          calculate_final_MST();
     }
 
@@ -248,11 +248,26 @@ public class Create {
             }
         }
         Graph graph = new Graph(streets, false, true);
+        int v = streets;
+
+        // Adjacency list for storing which vertices are connected
+        ArrayList<ArrayList<Integer>> adj =
+                new ArrayList<ArrayList<Integer>>(v);
+        for (i = 0; i < v; i++) {
+            adj.add(new ArrayList<Integer>());
+        }
         for( i=0;i<streets;i++)
             for(j=0;j<streets;j++)
-                if(distances[i][j]>0)
-                    graph.addEdge(i,j,distances[i][j]);
-          Prim.start(graph);
+                if(distances[i][j]>0) {
+                    graph.addEdge(i, j, distances[i][j]);
+                    addEdge(adj, i, j);
+                    addEdge(adj, j, i);
+                }
+        Prim.start(graph);
+        int source = 0;
+        int dest = 7;
+        printShortestDistance(adj, source, dest, v);
+        System.out.println();
     }
 public void calculate_final_MST()
 {
@@ -368,5 +383,73 @@ public void calculate_final_MST()
 
     public List<Street> getStreetList() {
         return streetList;
+    }
+    private static void addEdge(ArrayList<ArrayList<Integer>> adj, int i, int j)
+    {
+        adj.get(i).add(j);
+        adj.get(j).add(i);
+    }
+
+    private static void printShortestDistance(
+            ArrayList<ArrayList<Integer>> adj,
+            int s, int dest, int v)
+    {
+
+        int pred[] = new int[v];
+        int dist[] = new int[v];
+
+        if (BFS(adj, s, dest, v, pred, dist) == false) {
+            System.out.println("Given source and destination" +
+                    "are not connected");
+            return;
+        }
+
+        LinkedList<Integer> path = new LinkedList<Integer>();
+        int crawl = dest;
+        path.add(crawl);
+        while (pred[crawl] != -1) {
+            path.add(pred[crawl]);
+            crawl = pred[crawl];
+        }
+
+        System.out.println("Shortest path length is: " + dist[dest]);
+
+        System.out.print("Path is :: ");
+        for (int i = path.size() - 1; i >= 0; i--) {
+            System.out.print(path.get(i) + 1 + " ");
+        }
+    }
+
+    private static boolean BFS(ArrayList<ArrayList<Integer>> adj, int src,
+                               int dest, int v, int pred[], int dist[]) {
+        LinkedList<Integer> queue = new LinkedList<Integer>();
+        boolean visited[] = new boolean[v];
+
+        for (int i = 0; i < v; i++) {
+            visited[i] = false;
+            dist[i] = Integer.MAX_VALUE;
+            pred[i] = -1;
+        }
+
+        visited[src] = true;
+        dist[src] = 0;
+        queue.add(src);
+
+        // bfs
+        while (!queue.isEmpty()) {
+            int u = queue.remove();
+            for (int i = 0; i < adj.get(u).size(); i++) {
+                if (visited[adj.get(u).get(i)] == false) {
+                    visited[adj.get(u).get(i)] = true;
+                    dist[adj.get(u).get(i)] = dist[u] + 1;
+                    pred[adj.get(u).get(i)] = u;
+                    queue.add(adj.get(u).get(i));
+
+                    if (adj.get(u).get(i) == dest)
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 }
